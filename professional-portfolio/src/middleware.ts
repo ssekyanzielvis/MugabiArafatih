@@ -35,12 +35,7 @@ export async function middleware(request: NextRequest) {
     await supabase.auth.getUser()
 
     // Protect admin routes
-    if (request.nextUrl.pathname.startsWith('/dashboard') ||
-        request.nextUrl.pathname.startsWith('/content') ||
-        request.nextUrl.pathname.startsWith('/analytics') ||
-        request.nextUrl.pathname.startsWith('/users') ||
-        request.nextUrl.pathname.startsWith('/settings')) {
-
+    if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
         const { data: { user } } = await supabase.auth.getUser()
 
         if (!user) {
@@ -53,10 +48,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/dashboard/:path*',
-        '/content/:path*',
-        '/analytics/:path*',
-        '/users/:path*',
-        '/settings/:path*',
+        '/admin/:path*',
     ],
 }

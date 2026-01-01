@@ -85,7 +85,7 @@ export default async function DashboardPage() {
                 <h2 className="text-xl font-semibold mb-4 text-gray-900">Quick Actions</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Link
-                        href="/content"
+                        href="/admin/content"
                         className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
                     >
                         <FileText className="text-blue-600 mb-2" size={24} />
@@ -94,7 +94,7 @@ export default async function DashboardPage() {
                     </Link>
 
                     <Link
-                        href="/analytics"
+                        href="/admin/analytics"
                         className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all"
                     >
                         <BarChart3 className="text-purple-600 mb-2" size={24} />
@@ -103,7 +103,7 @@ export default async function DashboardPage() {
                     </Link>
 
                     <Link
-                        href="/users"
+                        href="/admin/users"
                         className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all"
                     >
                         <Users className="text-green-600 mb-2" size={24} />

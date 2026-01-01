@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { userSchema, type UserFormData } from '@/lib/schemas/user'
+import { User } from '@/types/user.types'
 import { createClient } from '@/lib/supabase/client'
-import { UserPlus, Trash2, Shield, Edit2, Save, X } from 'lucide-react'
+import { UserPlus, Trash2, Edit2, Save, X } from 'lucide-react'
 
 export default function UserManagement() {
-    const [users, setUsers] = useState<any[]>([])
+    const [users, setUsers] = useState<User[]>([])
     const [isAdding, setIsAdding] = useState(false)
     const [editingId, setEditingId] = useState<string | null>(null)
     const [loading, setLoading] = useState(true)
@@ -22,6 +23,9 @@ export default function UserManagement() {
         formState: { errors },
     } = useForm<UserFormData>({
         resolver: zodResolver(userSchema),
+        defaultValues: {
+            role: 'admin'
+        }
     })
 
     useEffect(() => {
@@ -69,10 +73,14 @@ export default function UserManagement() {
         }
     }
 
-    function handleEdit(user: any) {
+    function handleEdit(user: User) {
         setEditingId(user.id)
         setIsAdding(true)
-        reset(user)
+        reset({
+            ...user,
+            full_name: user.full_name || '',
+            password: ''
+        })
     }
 
     function handleCancel() {

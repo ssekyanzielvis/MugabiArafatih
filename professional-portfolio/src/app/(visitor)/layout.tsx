@@ -16,13 +16,11 @@ export default function VisitorLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en" className="dark">
-            <body className={`${inter.className} bg-gray-900 text-white min-h-screen antialiased`}>
-                <Header />
-                <main className="container mx-auto px-4 py-8 max-w-7xl">
-                    {children}
-                </main>
-            </body>
-        </html>
+        <div className="dark bg-gray-900 text-white min-h-screen antialiased">
+            <Header />
+            <main className="container mx-auto px-4 py-8 max-w-7xl">
+                {children}
+            </main>
+        </div>
     )
 }

@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
                 throw new Error('Unauthorized: Admin access required')
             }
 
-            router.push('/dashboard')
+            router.push('/admin/dashboard')
             router.refresh()
         } catch (err: any) {
             setError(err.message || 'Failed to login')

@@ -15,11 +15,11 @@ import {
 import { useState } from 'react'
 
 const navItems = [
-    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Content', path: '/content', icon: FileText },
-    { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'Users', path: '/users', icon: Users },
-    { name: 'Settings', path: '/settings', icon: Settings },
+    { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Content', path: '/admin/content', icon: FileText },
+    { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
+    { name: 'Users', path: '/admin/users', icon: Users },
+    { name: 'Settings', path: '/admin/settings', icon: Settings },
 ]
 
 export default function AdminSidebar() {
@@ -65,8 +65,8 @@ export default function AdminSidebar() {
                             key={item.path}
                             href={item.path}
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                                 }`}
                             title={isCollapsed ? item.name : undefined}
                         >
