@@ -111,9 +111,9 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
-                className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all ${dragActive
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                className={`relative border-2 border-dashed p-12 text-center transition-all ${dragActive
+                    ? 'border-inherit bg-inherit invert shadow-[0_0_0_4px_inset_currentColor]'
+                    : 'border-inherit opacity-60 hover:opacity-100 bg-inherit'
                     }`}
             >
                 <input
@@ -124,37 +124,37 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
                     className="hidden"
                 />
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     <div className="flex justify-center">
                         {uploading ? (
-                            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-16 h-16 border-4 border-inherit border-t-transparent animate-spin"></div>
                         ) : (
-                            <Upload className="w-16 h-16 text-gray-400" />
+                            <Upload className="w-20 h-20 opacity-40" />
                         )}
                     </div>
 
                     <div>
-                        <p className="text-lg font-medium text-gray-700">
-                            {uploading ? 'Uploading...' : 'Drop files here or click to upload'}
+                        <p className="text-xl font-bold uppercase tracking-widest">
+                            {uploading ? 'Processing Data...' : 'Drop Assets or click to Initialize'}
                         </p>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Supports: JPG, PNG, GIF, WebP, MP4, WebM (max 10MB)
+                        <p className="text-[10px] font-mono font-bold uppercase opacity-40 mt-2">
+                            Valid Extensions: JPG / PNG / GIF / WEBP / MP4 / WEBM (MAX: 10MB)
                         </p>
                     </div>
 
                     {!uploading && (
                         <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            className="admin-button px-10 py-3 text-xs font-bold uppercase tracking-widest"
                         >
-                            Choose File
+                            Select File
                         </button>
                     )}
 
                     {uploading && uploadProgress > 0 && (
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+                        <div className="w-full max-w-xs mx-auto border border-inherit h-4 p-0.5 mt-6">
                             <div
-                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                className="bg-inherit invert h-full transition-all duration-300"
                                 style={{ width: `${uploadProgress}%` }}
                             ></div>
                         </div>
@@ -164,16 +164,16 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
 
             {/* Status Messages */}
             {uploadStatus === 'success' && (
-                <div className="flex items-center space-x-2 text-green-600 bg-green-50 border border-green-200 rounded-lg p-4">
-                    <CheckCircle size={20} />
-                    <span>File uploaded successfully!</span>
+                <div className="flex items-center space-x-3 text-inherit border-2 border-inherit bg-inherit invert p-4 font-bold uppercase tracking-widest text-xs">
+                    <CheckCircle size={18} />
+                    <span>Upload Sequence Successful</span>
                 </div>
             )}
 
             {uploadStatus === 'error' && (
-                <div className="flex items-center space-x-2 text-red-600 bg-red-50 border border-red-200 rounded-lg p-4">
-                    <AlertCircle size={20} />
-                    <span>Failed to upload file. Please try again.</span>
+                <div className="flex items-center space-x-3 text-red-500 border-2 border-red-500 p-4 font-bold uppercase tracking-widest text-xs">
+                    <AlertCircle size={18} />
+                    <span>Upload Sequence Failed / Interrupt detected</span>
                 </div>
             )}
         </div>

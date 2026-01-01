@@ -34,12 +34,33 @@ interface AnalyticsData {
     growthRate: number
 }
 
+import { useAdminTheme } from './AdminThemeContext'
+
 export default function AnalyticsChart() {
     const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
     const [loading, setLoading] = useState(true)
     const [timeRange, setTimeRange] = useState<'7days' | '30days'>('7days')
+    const { theme } = useAdminTheme()
 
     const supabase = createClient()
+
+    // B&W Palette for charts
+    const chartConfig = {
+        light: {
+            stroke: '#000000',
+            grid: '#e5e7eb',
+            text: '#374151',
+            palette: ['#000000', '#4b5563', '#9ca3af', '#d1d5db', '#000000']
+        },
+        dark: {
+            stroke: '#ffffff',
+            grid: '#1f2937',
+            text: '#9ca3af',
+            palette: ['#ffffff', '#9ca3af', '#4b5563', '#1f2937', '#ffffff']
+        }
+    }
+
+    const currentColors = chartConfig[theme]
 
     useEffect(() => {
         fetchAnalyticsData()
@@ -119,9 +140,9 @@ export default function AnalyticsChart() {
             <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="bg-white p-6 rounded-xl shadow animate-pulse">
-                            <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+                        <div key={i} className="admin-card p-6 animate-pulse">
+                            <div className="h-4 bg-inherit border border-inherit opacity-20 rounded w-1/2 mb-4"></div>
+                            <div className="h-8 bg-inherit border border-inherit opacity-20 rounded w-3/4"></div>
                         </div>
                     ))}
                 </div>
@@ -135,21 +156,21 @@ export default function AnalyticsChart() {
         <div className="space-y-8">
             {/* Time Range Selector */}
             <div className="flex justify-end">
-                <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1">
+                <div className="inline-flex border border-inherit bg-inherit p-1">
                     <button
                         onClick={() => setTimeRange('7days')}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${timeRange === '7days'
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-700 hover:bg-gray-100'
+                        className={`px-4 py-2 text-sm font-bold uppercase transition-colors ${timeRange === '7days'
+                            ? 'bg-inherit invert shadow-none'
+                            : 'hover:invert'
                             }`}
                     >
                         7 Days
                     </button>
                     <button
                         onClick={() => setTimeRange('30days')}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${timeRange === '30days'
-                                ? 'bg-blue-600 text-white'
-                                : 'text-gray-700 hover:bg-gray-100'
+                        className={`px-4 py-2 text-sm font-bold uppercase transition-colors ${timeRange === '30days'
+                            ? 'bg-inherit invert shadow-none'
+                            : 'hover:invert'
                             }`}
                     >
                         30 Days
@@ -159,105 +180,82 @@ export default function AnalyticsChart() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Total Visits</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{analyticsData.totalVisits}</p>
+                {[
+                    { label: 'Total Visits', value: analyticsData.totalVisits, icon: Eye, trend: analyticsData.growthRate },
+                    { label: 'Unique Visitors', value: analyticsData.totalUnique, icon: Users, trend: 8 },
+                    { label: 'Avg. Duration', value: analyticsData.avgDuration, icon: Clock, trend: 15 },
+                    { label: 'Bounce Rate', value: '34%', icon: Activity, trend: -5 },
+                ].map((stat, idx) => (
+                    <div key={idx} className="admin-card p-6 border-b-4 border-b-inherit">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold uppercase opacity-60 tracking-wider font-mono">{stat.label}</p>
+                                <p className="text-4xl font-bold mt-2 font-mono tracking-tighter">{stat.value}</p>
+                            </div>
+                            <div className="w-12 h-12 border border-inherit flex items-center justify-center">
+                                <stat.icon size={24} />
+                            </div>
                         </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <Eye className="text-blue-600" size={24} />
-                        </div>
-                    </div>
-                    <div className="mt-4 flex items-center">
-                        {analyticsData.growthRate >= 0 ? (
-                            <TrendingUp className="text-green-600" size={16} />
-                        ) : (
-                            <TrendingDown className="text-red-600" size={16} />
-                        )}
-                        <span className={`text-sm ml-1 ${analyticsData.growthRate >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {Math.abs(analyticsData.growthRate).toFixed(1)}% from last week
-                        </span>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Unique Visitors</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{analyticsData.totalUnique}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <Users className="text-purple-600" size={24} />
+                        <div className="mt-4 flex items-center">
+                            {stat.trend >= 0 ? (
+                                <TrendingUp size={16} />
+                            ) : (
+                                <TrendingDown size={16} />
+                            )}
+                            <span className="text-sm ml-1 font-bold">
+                                {Math.abs(stat.trend).toFixed(1)}% {stat.trend >= 0 ? 'increase' : 'decrease'}
+                            </span>
                         </div>
                     </div>
-                    <p className="text-green-600 text-sm mt-4">↑ 8% from last week</p>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Avg. Duration</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{analyticsData.avgDuration}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <Clock className="text-green-600" size={24} />
-                        </div>
-                    </div>
-                    <p className="text-green-600 text-sm mt-4">↑ 15% from last week</p>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Bounce Rate</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">34%</p>
-                        </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <Activity className="text-orange-600" size={24} />
-                        </div>
-                    </div>
-                    <p className="text-red-600 text-sm mt-4">↓ 5% from last week</p>
-                </div>
+                ))}
             </div>
 
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Visits Line Chart with Predictions */}
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Visits Over Time & Predictions</h3>
+                <div className="admin-card p-6">
+                    <h3 className="text-lg font-bold mb-6 uppercase tracking-widest flex items-center">
+                        <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                        Traffic Overview
+                    </h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={[...analyticsData.visits, ...analyticsData.predictions]}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                                <XAxis dataKey="date" stroke="#6b7280" />
-                                <YAxis stroke="#6b7280" />
-                                <Tooltip />
-                                <Legend />
+                                <CartesianGrid strokeDasharray="1 1" stroke={currentColors.grid} />
+                                <XAxis dataKey="date" stroke={currentColors.text} fontSize={10} strokeWidth={2} />
+                                <YAxis stroke={currentColors.text} fontSize={10} strokeWidth={2} />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: theme === 'light' ? '#fff' : '#000',
+                                        border: `1px solid ${theme === 'light' ? '#000' : '#fff'}`,
+                                        color: theme === 'light' ? '#000' : '#fff'
+                                    }}
+                                />
+                                <Legend verticalAlign="top" height={36} />
                                 <Line
-                                    type="monotone"
+                                    type="stepAfter"
                                     dataKey="visits"
-                                    stroke="#3b82f6"
-                                    strokeWidth={2}
-                                    dot={{ fill: '#3b82f6' }}
-                                    name="Actual Visits"
+                                    stroke={currentColors.stroke}
+                                    strokeWidth={3}
+                                    dot={false}
+                                    name="Visits"
                                 />
                                 <Line
-                                    type="monotone"
+                                    type="stepAfter"
                                     dataKey="unique"
-                                    stroke="#8b5cf6"
-                                    strokeWidth={2}
-                                    dot={{ fill: '#8b5cf6' }}
-                                    name="Unique Visitors"
+                                    stroke={currentColors.stroke}
+                                    strokeWidth={1}
+                                    strokeDasharray="4 4"
+                                    name="Unique"
                                 />
                                 <Line
                                     type="monotone"
                                     dataKey="predicted"
-                                    stroke="#10b981"
-                                    strokeWidth={2}
-                                    strokeDasharray="5 5"
-                                    dot={{ fill: '#10b981' }}
-                                    name="Predicted"
+                                    stroke={currentColors.stroke}
+                                    strokeWidth={3}
+                                    strokeDasharray="2 2"
+                                    opacity={0.3}
+                                    name="Forecast"
                                 />
                             </LineChart>
                         </ResponsiveContainer>
@@ -265,8 +263,11 @@ export default function AnalyticsChart() {
                 </div>
 
                 {/* Device Distribution Pie Chart */}
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Device Distribution</h3>
+                <div className="admin-card p-6">
+                    <h3 className="text-lg font-bold mb-6 uppercase tracking-widest flex items-center">
+                        <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                        System Origin
+                    </h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -275,16 +276,28 @@ export default function AnalyticsChart() {
                                     cx="50%"
                                     cy="50%"
                                     labelLine={false}
-                                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                    label={(props: any) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
                                     outerRadius={100}
-                                    fill="#8884d8"
+                                    innerRadius={60}
+                                    paddingAngle={5}
                                     dataKey="value"
                                 >
                                     {analyticsData.devices.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill={currentColors.palette[index % currentColors.palette.length]}
+                                            stroke={currentColors.stroke}
+                                            strokeWidth={1}
+                                        />
                                     ))}
                                 </Pie>
-                                <Tooltip />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: theme === 'light' ? '#fff' : '#000',
+                                        border: `1px solid ${theme === 'light' ? '#000' : '#fff'}`,
+                                        color: theme === 'light' ? '#000' : '#fff'
+                                    }}
+                                />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
@@ -292,17 +305,32 @@ export default function AnalyticsChart() {
             </div>
 
             {/* Page Views Bar Chart */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900">Page Views</h3>
+            <div className="admin-card p-6">
+                <h3 className="text-lg font-bold mb-6 uppercase tracking-widest flex items-center">
+                    <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                    Page Popularity
+                </h3>
                 <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={Object.entries(analyticsData.pageViews).map(([path, views]) => ({ path, views }))}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                            <XAxis dataKey="path" stroke="#6b7280" />
-                            <YAxis stroke="#6b7280" />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="views" fill="#3b82f6" name="Page Views" />
+                            <CartesianGrid strokeDasharray="3 3" stroke={currentColors.grid} />
+                            <XAxis dataKey="path" stroke={currentColors.text} fontSize={10} strokeWidth={2} />
+                            <YAxis stroke={currentColors.text} fontSize={10} strokeWidth={2} />
+                            <Tooltip
+                                cursor={{ fill: 'transparent', stroke: currentColors.stroke, strokeWidth: 1 }}
+                                contentStyle={{
+                                    backgroundColor: theme === 'light' ? '#fff' : '#000',
+                                    border: `1px solid ${theme === 'light' ? '#000' : '#fff'}`,
+                                    color: theme === 'light' ? '#000' : '#fff'
+                                }}
+                            />
+                            <Bar
+                                dataKey="views"
+                                fill={currentColors.stroke}
+                                stroke={currentColors.stroke}
+                                strokeWidth={1}
+                                name="Views"
+                            />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

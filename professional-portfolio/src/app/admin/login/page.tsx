@@ -49,36 +49,36 @@ export default function AdminLoginPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-black flex items-center justify-center p-4">
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-2xl p-8">
+                <div className="bg-white border-4 border-white p-10 shadow-[20px_20px_0_0_rgba(255,255,255,0.1)]">
                     {/* Logo */}
-                    <div className="flex justify-center mb-8">
-                        <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                            <span className="text-white font-bold text-2xl">MA</span>
+                    <div className="flex justify-center mb-10">
+                        <div className="w-24 h-24 border-8 border-black flex items-center justify-center">
+                            <span className="text-black font-black text-4xl italic tracking-tighter">MA</span>
                         </div>
                     </div>
 
                     {/* Title */}
-                    <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">
-                        Admin Login
+                    <h1 className="text-4xl font-black text-center text-black mb-2 uppercase tracking-tighter">
+                        Terminal Access
                     </h1>
-                    <p className="text-center text-gray-600 mb-8">
-                        Sign in to access the dashboard
+                    <p className="text-center text-black opacity-60 mb-10 text-xs font-bold uppercase tracking-widest">
+                        Administrative Protocol Required
                     </p>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-red-600 text-sm">{error}</p>
+                        <div className="mb-8 p-4 border-2 border-red-600 bg-red-50">
+                            <p className="text-red-600 text-xs font-bold uppercase tracking-tight">{error}</p>
                         </div>
                     )}
 
                     {/* Login Form */}
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form onSubmit={handleLogin} className="space-y-8">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                Email Address
+                            <label htmlFor="email" className="block text-xs font-black text-black mb-3 uppercase tracking-widest">
+                                Identification (Email)
                             </label>
                             <input
                                 id="email"
@@ -86,14 +86,14 @@ export default function AdminLoginPage() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                placeholder="admin@example.com"
+                                className="w-full px-4 py-4 border-4 border-black text-black font-bold focus:outline-none focus:bg-black focus:text-white transition-all placeholder:opacity-30"
+                                placeholder="ADMIN@CORE.SYSTEM"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                                Password
+                            <label htmlFor="password" className="block text-xs font-black text-black mb-3 uppercase tracking-widest">
+                                Authorization Code
                             </label>
                             <input
                                 id="password"
@@ -101,7 +101,7 @@ export default function AdminLoginPage() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full px-4 py-4 border-4 border-black text-black font-bold focus:outline-none focus:bg-black focus:text-white transition-all placeholder:opacity-30"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -109,36 +109,36 @@ export default function AdminLoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center space-x-2"
+                            className="w-full bg-black text-white font-black py-5 px-8 hover:bg-white hover:text-black border-4 border-black transition-all duration-300 flex items-center justify-center space-x-3 uppercase tracking-widest"
                         >
                             {loading ? (
                                 <>
-                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                    <span>Signing in...</span>
+                                    <div className="w-6 h-6 border-4 border-white border-t-transparent animate-spin"></div>
+                                    <span>Verifying...</span>
                                 </>
                             ) : (
                                 <>
-                                    <LogIn size={20} />
-                                    <span>Sign In</span>
+                                    <LogIn size={24} />
+                                    <span>Initialize Session</span>
                                 </>
                             )}
                         </button>
                     </form>
 
                     {/* Footer */}
-                    <div className="mt-8 text-center">
+                    <div className="mt-10 text-center border-t-2 border-black pt-6">
                         <a
                             href="/"
-                            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+                            className="text-xs font-black text-black hover:opacity-50 transition-opacity uppercase tracking-widest"
                         >
-                            ← Back to website
+                            ← Return to Public Portal
                         </a>
                     </div>
                 </div>
 
                 {/* Info */}
-                <p className="text-center text-gray-400 text-sm mt-6">
-                    Protected admin area. Authorized personnel only.
+                <p className="text-center text-white opacity-40 text-[10px] font-bold mt-8 uppercase tracking-[0.2em]">
+                    Encrypted Connection // Level 4 Authentication Active
                 </p>
             </div>
         </div>

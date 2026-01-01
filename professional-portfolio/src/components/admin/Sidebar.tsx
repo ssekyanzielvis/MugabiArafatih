@@ -10,9 +10,12 @@ import {
     Settings,
     LogOut,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Sun,
+    Moon
 } from 'lucide-react'
 import { useState } from 'react'
+import { useAdminTheme } from './AdminThemeContext'
 
 const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -25,6 +28,7 @@ const navItems = [
 export default function AdminSidebar() {
     const pathname = usePathname()
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const { theme, toggleTheme } = useAdminTheme()
 
     const handleLogout = async () => {
         // Logout functionality will be implemented with API route
@@ -32,23 +36,23 @@ export default function AdminSidebar() {
     }
 
     return (
-        <aside className={`bg-gray-900 text-white transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col`}>
+        <aside className={`admin-panel border-r border-inherit transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col shadow-none`}>
             {/* Header */}
-            <div className="p-6 border-b border-gray-800 flex items-center justify-between">
+            <div className="p-6 border-b border-inherit flex items-center justify-between">
                 {!isCollapsed && (
                     <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">MA</span>
+                        <div className="w-10 h-10 bg-inherit border border-inherit rounded-lg flex items-center justify-center">
+                            <span className="font-bold text-xl uppercase">M</span>
                         </div>
                         <div>
                             <h2 className="font-bold text-lg">Admin</h2>
-                            <p className="text-xs text-gray-400">Dashboard</p>
+                            <p className="text-xs opacity-60">Dashboard</p>
                         </div>
                     </div>
                 )}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                    className="p-2 hover:invert transition-colors"
                 >
                     {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                 </button>
@@ -64,9 +68,9 @@ export default function AdminSidebar() {
                         <Link
                             key={item.path}
                             href={item.path}
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${isActive
-                                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-none transition-all duration-200 border border-transparent ${isActive
+                                ? 'bg-inherit invert'
+                                : 'hover:bg-inherit hover:invert'
                                 }`}
                             title={isCollapsed ? item.name : undefined}
                         >
@@ -77,11 +81,20 @@ export default function AdminSidebar() {
                 })}
             </nav>
 
-            {/* Logout */}
-            <div className="p-4 border-t border-gray-800">
+            {/* Footer Actions */}
+            <div className="p-4 border-t border-inherit space-y-2">
+                <button
+                    onClick={toggleTheme}
+                    className="flex items-center space-x-3 px-4 py-3 rounded-none hover:bg-inherit hover:invert transition-all duration-200 w-full"
+                    title={isCollapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
+                >
+                    {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                    {!isCollapsed && <span className="font-medium">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
+                </button>
+
                 <button
                     onClick={handleLogout}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-red-600 hover:text-white transition-all duration-200 w-full"
+                    className="flex items-center space-x-3 px-4 py-3 rounded-none hover:bg-red-600 hover:text-white transition-all duration-200 w-full"
                     title={isCollapsed ? 'Logout' : undefined}
                 >
                     <LogOut size={20} />

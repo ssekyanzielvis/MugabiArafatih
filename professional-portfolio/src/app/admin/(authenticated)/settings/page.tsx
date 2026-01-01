@@ -11,54 +11,56 @@ export default function SettingsPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-                <p className="text-gray-600 mt-2">Customize your website appearance and preferences</p>
+                <h1 className="text-3xl font-bold uppercase tracking-tighter">Settings</h1>
+                <p className="opacity-60 mt-2 font-medium">Customize your website appearance and preferences</p>
             </div>
 
             {/* Color Settings */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <div className="flex items-center space-x-3 mb-6">
-                    <Palette className="text-blue-600" size={24} />
-                    <h2 className="text-xl font-semibold text-gray-900">Color Scheme</h2>
+            <div className="admin-card p-6">
+                <div className="flex items-center space-x-3 mb-8">
+                    <div className="w-10 h-10 border border-inherit flex items-center justify-center">
+                        <Palette size={20} />
+                    </div>
+                    <h2 className="text-xl font-bold uppercase tracking-widest">Color Scheme</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-bold mb-3 uppercase opacity-60 tracking-widest">
                             Primary Color
                         </label>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-4">
                             <input
                                 type="color"
                                 value={primaryColor}
                                 onChange={(e) => setPrimaryColor(e.target.value)}
-                                className="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer"
+                                className="w-16 h-16 border-4 border-inherit cursor-pointer bg-inherit"
                             />
                             <input
                                 type="text"
                                 value={primaryColor}
                                 onChange={(e) => setPrimaryColor(e.target.value)}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="admin-input flex-1 px-4 py-3 font-mono"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-bold mb-3 uppercase opacity-60 tracking-widest">
                             Secondary Color
                         </label>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-4">
                             <input
                                 type="color"
                                 value={secondaryColor}
                                 onChange={(e) => setSecondaryColor(e.target.value)}
-                                className="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer"
+                                className="w-16 h-16 border-4 border-inherit cursor-pointer bg-inherit"
                             />
                             <input
                                 type="text"
                                 value={secondaryColor}
                                 onChange={(e) => setSecondaryColor(e.target.value)}
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="admin-input flex-1 px-4 py-3 font-mono"
                             />
                         </div>
                     </div>
@@ -66,20 +68,22 @@ export default function SettingsPage() {
             </div>
 
             {/* Typography Settings */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <div className="flex items-center space-x-3 mb-6">
-                    <Type className="text-purple-600" size={24} />
-                    <h2 className="text-xl font-semibold text-gray-900">Typography</h2>
+            <div className="admin-card p-6">
+                <div className="flex items-center space-x-3 mb-8">
+                    <div className="w-10 h-10 border border-inherit flex items-center justify-center">
+                        <Type size={20} />
+                    </div>
+                    <h2 className="text-xl font-bold uppercase tracking-widest">Typography</h2>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs font-bold mb-3 uppercase opacity-60 tracking-widest">
                         Font Family
                     </label>
                     <select
                         value={fontFamily}
                         onChange={(e) => setFontFamily(e.target.value)}
-                        className="w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="admin-input w-full md:w-1/2 px-4 py-3 bg-inherit"
                     >
                         <option value="Inter">Inter</option>
                         <option value="Roboto">Roboto</option>
@@ -91,18 +95,20 @@ export default function SettingsPage() {
             </div>
 
             {/* Layout Settings */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <div className="flex items-center space-x-3 mb-6">
-                    <Layout className="text-green-600" size={24} />
-                    <h2 className="text-xl font-semibold text-gray-900">Layout</h2>
+            <div className="admin-card p-6">
+                <div className="flex items-center space-x-3 mb-8">
+                    <div className="w-10 h-10 border border-inherit flex items-center justify-center">
+                        <Layout size={20} />
+                    </div>
+                    <h2 className="text-xl font-bold uppercase tracking-widest">Layout</h2>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-bold mb-3 uppercase opacity-60 tracking-widest">
                             Max Width
                         </label>
-                        <select className="w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <select className="admin-input w-full md:w-1/2 px-4 py-3 bg-inherit">
                             <option value="1280px">1280px (Default)</option>
                             <option value="1440px">1440px (Wide)</option>
                             <option value="1920px">1920px (Full)</option>
@@ -110,10 +116,10 @@ export default function SettingsPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-xs font-bold mb-3 uppercase opacity-60 tracking-widest">
                             Spacing
                         </label>
-                        <select className="w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <select className="admin-input w-full md:w-1/2 px-4 py-3 bg-inherit">
                             <option value="compact">Compact</option>
                             <option value="normal">Normal (Default)</option>
                             <option value="relaxed">Relaxed</option>
@@ -123,9 +129,9 @@ export default function SettingsPage() {
             </div>
 
             {/* Save Button */}
-            <div className="flex justify-end">
-                <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    Save Changes
+            <div className="flex justify-start">
+                <button className="admin-button px-12 py-4">
+                    SAVE CHANGES
                 </button>
             </div>
         </div>

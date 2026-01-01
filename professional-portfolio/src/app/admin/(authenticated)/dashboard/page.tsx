@@ -25,102 +25,81 @@ export default async function DashboardPage() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 mt-2">Welcome back! Here's what's happening with your portfolio.</p>
+                <h1 className="text-3xl font-bold uppercase tracking-tighter">Dashboard</h1>
+                <p className="opacity-60 mt-2 font-medium">Welcome back! Here's what's happening with your portfolio.</p>
             </div>
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Total Visits</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{totalVisitsCount}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <BarChart3 className="text-blue-600" size={24} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Contact Submissions</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{submissionsCount}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                            <Users className="text-green-600" size={24} />
+                {[
+                    { label: 'Total Visits', value: totalVisitsCount, icon: BarChart3 },
+                    { label: 'Contact Submissions', value: submissionsCount, icon: Users },
+                    { label: 'Content Items', value: contentCount, icon: FileText },
+                    { label: 'Growth Rate', value: '+12%', icon: TrendingUp },
+                ].map((stat, idx) => (
+                    <div key={idx} className="admin-card p-6 border-b-4 border-b-inherit">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <p className="text-xs font-bold uppercase opacity-60 tracking-wider font-mono">{stat.label}</p>
+                                <p className="text-4xl font-bold mt-2 font-mono tracking-tighter">{stat.value}</p>
+                            </div>
+                            <div className="w-12 h-12 border border-inherit flex items-center justify-center">
+                                <stat.icon size={24} />
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Content Items</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">{contentCount}</p>
-                        </div>
-                        <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <FileText className="text-purple-600" size={24} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">Growth Rate</p>
-                            <p className="text-3xl font-bold mt-2 text-gray-900">+12%</p>
-                        </div>
-                        <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                            <TrendingUp className="text-orange-600" size={24} />
-                        </div>
-                    </div>
-                </div>
+                ))}
             </div>
 
             {/* Quick Actions */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900">Quick Actions</h2>
+            <div className="admin-card p-6">
+                <h2 className="text-xl font-bold mb-6 uppercase tracking-widest flex items-center">
+                    <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                    Quick Actions
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <Link
                         href="/admin/content"
-                        className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all"
+                        className="p-6 border border-inherit transition-all hover:bg-inherit hover:invert"
                     >
-                        <FileText className="text-blue-600 mb-2" size={24} />
-                        <h3 className="font-semibold text-gray-900">Manage Content</h3>
-                        <p className="text-sm text-gray-600 mt-1">Edit website content and media</p>
+                        <FileText className="mb-4" size={32} />
+                        <h3 className="font-bold uppercase text-lg">Manage Content</h3>
+                        <p className="text-sm opacity-70 mt-2">Edit website content and media</p>
                     </Link>
 
                     <Link
                         href="/admin/analytics"
-                        className="p-4 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all"
+                        className="p-6 border border-inherit transition-all hover:bg-inherit hover:invert"
                     >
-                        <BarChart3 className="text-purple-600 mb-2" size={24} />
-                        <h3 className="font-semibold text-gray-900">View Analytics</h3>
-                        <p className="text-sm text-gray-600 mt-1">Check visitor statistics</p>
+                        <BarChart3 className="mb-4" size={32} />
+                        <h3 className="font-bold uppercase text-lg">View Analytics</h3>
+                        <p className="text-sm opacity-70 mt-2">Check visitor statistics</p>
                     </Link>
 
                     <Link
                         href="/admin/users"
-                        className="p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all"
+                        className="p-6 border border-inherit transition-all hover:bg-inherit hover:invert"
                     >
-                        <Users className="text-green-600 mb-2" size={24} />
-                        <h3 className="font-semibold text-gray-900">Manage Users</h3>
-                        <p className="text-sm text-gray-600 mt-1">Add or edit admin users</p>
+                        <Users className="mb-4" size={32} />
+                        <h3 className="font-bold uppercase text-lg">Manage Users</h3>
+                        <p className="text-sm opacity-70 mt-2">Add or edit admin users</p>
                     </Link>
                 </div>
             </div>
 
             {/* Recent Submissions */}
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-900">Recent Contact Submissions</h2>
+            <div className="admin-card p-6">
+                <h2 className="text-xl font-bold mb-6 uppercase tracking-widest flex items-center">
+                    <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                    Recent Activity
+                </h2>
                 <div className="space-y-3">
                     {submissionsCount === 0 ? (
-                        <p className="text-gray-500 text-center py-8">No submissions yet</p>
+                        <div className="text-center py-12 border border-dashed border-inherit opacity-40">
+                            <p className="uppercase font-bold tracking-widest">No recent submissions</p>
+                        </div>
                     ) : (
-                        <p className="text-gray-600">View all submissions in the Analytics section</p>
+                        <p className="font-bold uppercase tracking-tight">View all submissions in the Analytics section</p>
                     )}
                 </div>
             </div>

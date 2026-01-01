@@ -26,7 +26,7 @@ export default function ContentEditor({ section }: ContentEditorProps) {
         formState: { errors },
     } = useForm<ContentFormData>({
         resolver: zodResolver(contentSchema),
-        defaultValues: { section, content_type: 'text', is_active: true },
+        defaultValues: { section, content_type: 'text', is_active: true, position: 0 },
     })
 
     useEffect(() => {
@@ -59,7 +59,7 @@ export default function ContentEditor({ section }: ContentEditorProps) {
             }
 
             fetchContent()
-            reset({ section, content_type: 'text', is_active: true })
+            reset({ section, content_type: 'text', is_active: true, position: 0 })
             setEditingId(null)
             setIsAdding(false)
         } catch (error) {
@@ -83,11 +83,11 @@ export default function ContentEditor({ section }: ContentEditorProps) {
     function handleCancel() {
         setEditingId(null)
         setIsAdding(false)
-        reset({ section, content_type: 'text', is_active: true })
+        reset({ section, content_type: 'text', is_active: true, position: 0 })
     }
 
     if (loading) {
-        return <div className="text-center py-8">Loading...</div>
+        return <div className="text-center py-8 opacity-60 italic uppercase tracking-widest font-bold">Loading Content...</div>
     }
 
     return (
@@ -96,7 +96,7 @@ export default function ContentEditor({ section }: ContentEditorProps) {
             {!isAdding && (
                 <button
                     onClick={() => setIsAdding(true)}
-                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="admin-button flex items-center space-x-2 px-6 py-3"
                 >
                     <Plus size={20} />
                     <span>Add New Content</span>
@@ -105,19 +105,20 @@ export default function ContentEditor({ section }: ContentEditorProps) {
 
             {/* Add/Edit Form */}
             {isAdding && (
-                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <h3 className="text-lg font-semibold mb-4">
-                        {editingId ? 'Edit Content' : 'Add New Content'}
+                <div className="admin-card p-6">
+                    <h3 className="text-xl font-bold mb-6 uppercase tracking-widest flex items-center">
+                        <span className="w-2 h-2 bg-inherit invert mr-2"></span>
+                        {editingId ? 'Edit Record' : 'Create New Record'}
                     </h3>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Content Type
+                                <label className="block text-xs font-bold mb-2 uppercase opacity-60 tracking-widest">
+                                    Type
                                 </label>
                                 <select
                                     {...register('content_type')}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="admin-input w-full px-4 py-3 bg-inherit"
                                 >
                                     <option value="text">Text</option>
                                     <option value="media">Media</option>
@@ -126,73 +127,73 @@ export default function ContentEditor({ section }: ContentEditorProps) {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Key
+                                <label className="block text-xs font-bold mb-2 uppercase opacity-60 tracking-widest">
+                                    Identifier Key
                                 </label>
                                 <input
                                     {...register('key')}
                                     type="text"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    placeholder="e.g., welcome, title, description"
+                                    className="admin-input w-full px-4 py-3"
+                                    placeholder="e.g., HERO_TITLE"
                                 />
                                 {errors.key && (
-                                    <p className="mt-1 text-sm text-red-600">{errors.key.message}</p>
+                                    <p className="mt-1 text-xs text-red-500 font-bold uppercase">{errors.key.message}</p>
                                 )}
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Value
+                            <label className="block text-xs font-bold mb-2 uppercase opacity-60 tracking-widest">
+                                Data Value
                             </label>
                             <textarea
                                 {...register('value')}
-                                rows={3}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                placeholder="Content value"
+                                rows={4}
+                                className="admin-input w-full px-4 py-3"
+                                placeholder="Enter content value..."
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Position
+                                <label className="block text-xs font-bold mb-2 uppercase opacity-60 tracking-widest">
+                                    Sequence
                                 </label>
                                 <input
                                     {...register('position', { valueAsNumber: true })}
                                     type="number"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="admin-input w-full px-4 py-3"
                                     placeholder="0"
                                 />
                             </div>
 
-                            <div className="flex items-center">
-                                <label className="flex items-center space-x-2 cursor-pointer">
+                            <div className="flex items-center pt-6">
+                                <label className="flex items-center space-x-3 cursor-pointer group">
                                     <input
                                         {...register('is_active')}
                                         type="checkbox"
-                                        className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        className="w-5 h-5 border-2 border-inherit bg-inherit checked:bg-inherit checked:invert appearance-none transition-all cursor-pointer"
                                     />
-                                    <span className="text-sm font-medium text-gray-700">Active</span>
+                                    <span className="text-xs font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">Published</span>
                                 </label>
                             </div>
                         </div>
 
-                        <div className="flex space-x-3">
+                        <div className="flex space-x-4 pt-4">
                             <button
                                 type="submit"
-                                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                className="admin-button px-8 py-3 flex items-center space-x-2"
                             >
                                 <Save size={18} />
-                                <span>Save</span>
+                                <span>Commit</span>
                             </button>
                             <button
                                 type="button"
                                 onClick={handleCancel}
-                                className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                                className="admin-panel border border-inherit px-8 py-3 flex items-center space-x-2 hover:invert transition-all"
                             >
                                 <X size={18} />
-                                <span>Cancel</span>
+                                <span>Discard</span>
                             </button>
                         </div>
                     </form>
@@ -200,39 +201,43 @@ export default function ContentEditor({ section }: ContentEditorProps) {
             )}
 
             {/* Content List */}
-            <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
                 {content.map((item) => (
                     <div
                         key={item.id}
-                        className="bg-white p-4 rounded-lg shadow border border-gray-200 flex items-start justify-between"
+                        className="admin-card p-6 flex items-start justify-between border-l-8 border-l-inherit"
                     >
                         <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                            <div className="flex items-center space-x-4 mb-3">
+                                <span className="px-3 py-1 border border-inherit text-[10px] font-bold uppercase tracking-widest">
                                     {item.content_type}
                                 </span>
-                                <span className="font-medium text-gray-900">{item.key}</span>
+                                <span className="font-mono font-bold tracking-tighter text-lg">{item.key}</span>
                                 {!item.is_active && (
-                                    <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded">
-                                        Inactive
+                                    <span className="px-3 py-1 bg-inherit invert text-[10px] font-bold uppercase tracking-widest">
+                                        Draft
                                     </span>
                                 )}
                             </div>
-                            <p className="text-gray-600 text-sm">{item.value}</p>
+                            <p className="opacity-70 text-sm leading-relaxed max-w-2xl">{item.value}</p>
                             {item.media_url && (
-                                <p className="text-gray-400 text-xs mt-1">Media: {item.media_url}</p>
+                                <div className="mt-4 p-2 border border-inherit inline-block">
+                                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-40">Attached: {item.media_url}</p>
+                                </div>
                             )}
                         </div>
-                        <div className="flex space-x-2 ml-4">
+                        <div className="flex flex-col space-y-2 ml-6">
                             <button
                                 onClick={() => handleEdit(item)}
-                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                className="p-3 border border-inherit hover:invert transition-all"
+                                title="Edit"
                             >
                                 <Pencil size={18} />
                             </button>
                             <button
                                 onClick={() => handleDelete(item.id)}
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                className="p-3 border border-inherit hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                title="Delete"
                             >
                                 <Trash2 size={18} />
                             </button>
