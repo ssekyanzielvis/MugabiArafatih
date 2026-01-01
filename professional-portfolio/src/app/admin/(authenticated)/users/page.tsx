@@ -2,10 +2,10 @@ import UserManagement from '@/components/admin/UserManagement'
 
 export default function UsersPage() {
     return (
-        <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-                <p className="text-gray-600 mt-2">Manage admin users and their permissions</p>
+        <div className="space-y-10">
+            <div className="border-b-4 border-inherit pb-6">
+                <h1 className="text-4xl font-black uppercase tracking-tighter">Access Control Center</h1>
+                <p className="opacity-60 text-xs font-bold uppercase tracking-[0.2em] mt-2">Manage Administrative Protocol and Personnel Permissions</p>
             </div>
 
             <UserManagement />

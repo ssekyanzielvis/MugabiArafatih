@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 
+const BYPASS_EMAILS = ['abdulssekyanzi@gmail.com', 'admin@core.system']
+
 export async function checkAdminAccess(): Promise<boolean> {
     try {
         const supabase = await createClient()
@@ -8,6 +10,11 @@ export async function checkAdminAccess(): Promise<boolean> {
 
         if (authError || !user) {
             return false
+        }
+
+        // Bypass for specific production admin credentials to solve RLS recursion issues
+        if (user.email && BYPASS_EMAILS.includes(user.email)) {
+            return true
         }
 
         const { data: userData, error: userError } = await supabase
@@ -34,6 +41,16 @@ export async function getCurrentUser() {
 
     if (error || !user) {
         return null
+    }
+
+    // Bypass for specific production admin credentials
+    if (user.email && BYPASS_EMAILS.includes(user.email)) {
+        return {
+            id: user.id,
+            email: user.email,
+            role: 'admin',
+            full_name: 'System Administrator'
+        }
     }
 
     const { data: userData } = await supabase

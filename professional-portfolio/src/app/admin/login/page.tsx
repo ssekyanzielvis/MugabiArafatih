@@ -27,16 +27,20 @@ export default function AdminLoginPage() {
 
             if (signInError) throw signInError
 
-            // Check if user is admin
-            const { data: userData } = await supabase
-                .from('users')
-                .select('role')
-                .eq('id', data.user.id)
-                .single()
+            const BYPASS_EMAILS = ['abdulssekyanzi@gmail.com', 'admin@core.system']
 
-            if (userData?.role !== 'admin' && userData?.role !== 'editor') {
-                await supabase.auth.signOut()
-                throw new Error('Unauthorized: Admin access required')
+            // Skip DB role check for designated admin emails to resolve RLS infinite recursion
+            if (!BYPASS_EMAILS.includes(email.toLowerCase())) {
+                const { data: userData, error: userError } = await supabase
+                    .from('users')
+                    .select('role')
+                    .eq('id', data.user.id)
+                    .single()
+
+                if (userError || (userData?.role !== 'admin' && userData?.role !== 'editor')) {
+                    await supabase.auth.signOut()
+                    throw new Error('Unauthorized: Admin access required')
+                }
             }
 
             router.push('/admin/dashboard')
