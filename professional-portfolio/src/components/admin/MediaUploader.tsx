@@ -3,12 +3,14 @@
 import { useState, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Upload, X, CheckCircle, AlertCircle, Image as ImageIcon, Video } from 'lucide-react'
+import { showToast } from '@/components/ui/toaster'
 
 interface MediaUploaderProps {
+    section?: 'home' | 'kinsmen' | 'collaborate'
     onUploadComplete?: (url: string) => void
 }
 
-export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) {
+export default function MediaUploader({ section, onUploadComplete }: MediaUploaderProps) {
     const [uploading, setUploading] = useState(false)
     const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle')
     const [uploadProgress, setUploadProgress] = useState(0)
@@ -50,31 +52,38 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
         setUploadProgress(0)
 
         try {
+            // Validate section
+            if (!section) {
+                throw new Error('Section is required for upload')
+            }
+
             // Validate file type
             const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm']
             if (!validTypes.includes(file.type)) {
                 throw new Error('Invalid file type. Please upload an image or video.')
             }
 
-            // Validate file size (max 10MB)
-            if (file.size > 10 * 1024 * 1024) {
-                throw new Error('File size must be less than 10MB')
+            // Validate file size (max 50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                throw new Error('File size must be less than 50MB')
             }
+
+            // Determine bucket name based on section
+            const bucketName = `${section}-media`
 
             // Create unique filename
             const fileExt = file.name.split('.').pop()
             const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`
-            const filePath = `media/${fileName}`
 
             // Simulate progress
             const progressInterval = setInterval(() => {
                 setUploadProgress((prev) => Math.min(prev + 10, 90))
             }, 100)
 
-            // Upload to Supabase Storage
+            // Upload to Supabase Storage (section-specific bucket)
             const { data, error } = await supabase.storage
-                .from('portfolio-media')
-                .upload(filePath, file)
+                .from(bucketName)
+                .upload(fileName, file)
 
             clearInterval(progressInterval)
 
@@ -82,8 +91,34 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
 
             // Get public URL
             const { data: { publicUrl } } = supabase.storage
-                .from('portfolio-media')
-                .getPublicUrl(filePath)
+                .from(bucketName)
+                .getPublicUrl(fileName)
+
+            // Save to section-specific media table
+            const mediaType = file.type.startsWith('image/') ? 'image' : 'video'
+            const tableName = `${section}_media`
+            
+            const { error: dbError } = await supabase
+                .from(tableName)
+                .insert([{
+                    media_url: publicUrl,
+                    media_type: mediaType,
+                    caption: file.name,
+                    position: 0,
+                    is_active: true
+                }])
+
+            if (dbError) {
+                console.error('Error saving media to database:', {
+                    message: dbError.message,
+                    details: dbError.details,
+                    hint: dbError.hint,
+                    code: dbError.code
+                })
+                showToast('error', `Failed to save media: ${dbError.message || 'Unknown error'}`)
+            } else {
+                showToast('success', 'Media uploaded and saved successfully!')
+            }
 
             setUploadProgress(100)
             setUploadStatus('success')
@@ -95,6 +130,9 @@ export default function MediaUploader({ onUploadComplete }: MediaUploaderProps) 
             setTimeout(() => {
                 setUploadStatus('idle')
                 setUploadProgress(0)
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                }
             }, 3000)
         } catch (error: any) {
             console.error('Error uploading file:', error)

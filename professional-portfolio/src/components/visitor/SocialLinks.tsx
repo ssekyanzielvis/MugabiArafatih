@@ -29,18 +29,7 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="visitor-card space-y-6">
-            <div>
-                <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-2">
-                    Connect With Me
-                </h3>
-                <div 
-                    className="w-16 h-1"
-                    style={{ backgroundColor: 'var(--theme-fg)' }}
-                />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.key] || Mail
                     const isEmail = link.key === 'email'
@@ -76,6 +65,5 @@ export default async function SocialLinks() {
                     )
                 })}
             </div>
-        </div>
     )
 }

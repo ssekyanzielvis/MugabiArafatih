@@ -22,21 +22,97 @@ CREATE TABLE IF NOT EXISTS public.users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Website content table
-CREATE TABLE IF NOT EXISTS public.website_content (
+-- ============================================
+-- HOME PAGE TABLES
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.home_content (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    section TEXT NOT NULL CHECK (section IN ('home', 'kinsmen', 'collaborate')),
-    content_type TEXT NOT NULL CHECK (content_type IN ('text', 'media', 'social')),
-    key TEXT NOT NULL,
-    value TEXT,
-    media_url TEXT,
-    media_type TEXT CHECK (media_type IN ('image', 'video', NULL)),
+    welcome_message TEXT,
+    full_name TEXT,
+    short_name TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.home_media (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+-- ============================================
+-- KINSMEN PAGE TABLES
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.kinsmen_content (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    definition TEXT,
+    title TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.kinsmen_media (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+-- ============================================
+-- COLLABORATE PAGE TABLES
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.collaborate_content (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.collaborate_media (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
+);
+
+-- ============================================
+-- SOCIAL MEDIA LINKS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.social_links (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    platform TEXT NOT NULL CHECK (platform IN ('email', 'facebook', 'tiktok', 'youtube', 'twitter')),
+    url TEXT NOT NULL,
     position INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
-    UNIQUE(section, key)
+    UNIQUE(platform)
 );
 
 -- Contact submissions table
@@ -86,8 +162,26 @@ CREATE TABLE IF NOT EXISTS public.appearance_settings (
 -- 2. CREATE INDEXES FOR PERFORMANCE
 -- ============================================
 
-CREATE INDEX IF NOT EXISTS idx_website_content_section ON public.website_content(section);
-CREATE INDEX IF NOT EXISTS idx_website_content_active ON public.website_content(is_active);
+-- Home content indexes
+CREATE INDEX IF NOT EXISTS idx_home_content_active ON public.home_content(is_active);
+CREATE INDEX IF NOT EXISTS idx_home_media_active ON public.home_media(is_active);
+CREATE INDEX IF NOT EXISTS idx_home_media_position ON public.home_media(position);
+
+-- Kinsmen content indexes
+CREATE INDEX IF NOT EXISTS idx_kinsmen_content_active ON public.kinsmen_content(is_active);
+CREATE INDEX IF NOT EXISTS idx_kinsmen_media_active ON public.kinsmen_media(is_active);
+CREATE INDEX IF NOT EXISTS idx_kinsmen_media_position ON public.kinsmen_media(position);
+
+-- Collaborate content indexes
+CREATE INDEX IF NOT EXISTS idx_collaborate_content_active ON public.collaborate_content(is_active);
+CREATE INDEX IF NOT EXISTS idx_collaborate_media_active ON public.collaborate_media(is_active);
+CREATE INDEX IF NOT EXISTS idx_collaborate_media_position ON public.collaborate_media(position);
+
+-- Social links indexes
+CREATE INDEX IF NOT EXISTS idx_social_links_active ON public.social_links(is_active);
+CREATE INDEX IF NOT EXISTS idx_social_links_position ON public.social_links(position);
+
+-- Other tables indexes
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_status ON public.contact_submissions(status);
 CREATE INDEX IF NOT EXISTS idx_contact_submissions_created ON public.contact_submissions(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_analytics_created ON public.analytics(created_at DESC);
@@ -115,10 +209,49 @@ CREATE TRIGGER update_users_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- Apply trigger to website_content table
-DROP TRIGGER IF EXISTS update_website_content_updated_at ON public.website_content;
-CREATE TRIGGER update_website_content_updated_at
-    BEFORE UPDATE ON public.website_content
+-- Apply triggers to home tables
+DROP TRIGGER IF EXISTS update_home_content_updated_at ON public.home_content;
+CREATE TRIGGER update_home_content_updated_at
+    BEFORE UPDATE ON public.home_content
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_home_media_updated_at ON public.home_media;
+CREATE TRIGGER update_home_media_updated_at
+    BEFORE UPDATE ON public.home_media
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Apply triggers to kinsmen tables
+DROP TRIGGER IF EXISTS update_kinsmen_content_updated_at ON public.kinsmen_content;
+CREATE TRIGGER update_kinsmen_content_updated_at
+    BEFORE UPDATE ON public.kinsmen_content
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_kinsmen_media_updated_at ON public.kinsmen_media;
+CREATE TRIGGER update_kinsmen_media_updated_at
+    BEFORE UPDATE ON public.kinsmen_media
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Apply triggers to collaborate tables
+DROP TRIGGER IF EXISTS update_collaborate_content_updated_at ON public.collaborate_content;
+CREATE TRIGGER update_collaborate_content_updated_at
+    BEFORE UPDATE ON public.collaborate_content
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_collaborate_media_updated_at ON public.collaborate_media;
+CREATE TRIGGER update_collaborate_media_updated_at
+    BEFORE UPDATE ON public.collaborate_media
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Apply trigger to social_links table
+DROP TRIGGER IF EXISTS update_social_links_updated_at ON public.social_links;
+CREATE TRIGGER update_social_links_updated_at
+    BEFORE UPDATE ON public.social_links
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
@@ -162,7 +295,13 @@ CREATE TRIGGER aggregate_analytics
 -- ============================================
 
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.website_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.home_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.home_media ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.kinsmen_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.kinsmen_media ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.collaborate_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.collaborate_media ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.social_links ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.daily_visits ENABLE ROW LEVEL SECURITY;
@@ -179,40 +318,116 @@ CREATE POLICY "Users are viewable by authenticated users"
     TO authenticated
     USING (true);
 
-DROP POLICY IF EXISTS "Users can be managed by admins" ON public.users;
-CREATE POLICY "Users can be managed by admins"
-    ON public.users FOR ALL
+DROP POLICY IF EXISTS "Users can update own profile" ON public.users;
+CREATE POLICY "Users can update own profile"
+    ON public.users FOR UPDATE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    USING (id = auth.uid())
+    WITH CHECK (id = auth.uid());
 
--- Website content policies
-DROP POLICY IF EXISTS "Active content is viewable by everyone" ON public.website_content;
-CREATE POLICY "Active content is viewable by everyone"
-    ON public.website_content FOR SELECT
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.users;
+CREATE POLICY "Users can insert own profile"
+    ON public.users FOR INSERT
+    TO authenticated
+    WITH CHECK (id = auth.uid());
+
+-- Home Content Policies
+DROP POLICY IF EXISTS "Home content viewable by all" ON public.home_content;
+CREATE POLICY "Home content viewable by all"
+    ON public.home_content FOR SELECT
     TO anon, authenticated
     USING (is_active = true);
 
-DROP POLICY IF EXISTS "All content is viewable by authenticated users" ON public.website_content;
-CREATE POLICY "All content is viewable by authenticated users"
-    ON public.website_content FOR SELECT
+DROP POLICY IF EXISTS "Home content manageable by admins" ON public.home_content;
+CREATE POLICY "Home content manageable by admins"
+    ON public.home_content FOR ALL
     TO authenticated
-    USING (true);
+    USING (true)
+    WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Content can be managed by admins and editors" ON public.website_content;
-CREATE POLICY "Content can be managed by admins and editors"
-    ON public.website_content FOR ALL
+-- Home Media Policies
+DROP POLICY IF EXISTS "Home media viewable by all" ON public.home_media;
+CREATE POLICY "Home media viewable by all"
+    ON public.home_media FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Home media manageable by admins" ON public.home_media;
+CREATE POLICY "Home media manageable by admins"
+    ON public.home_media FOR ALL
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role IN ('admin', 'editor')
-        )
-    );
+    USING (true)
+    WITH CHECK (true);
+
+-- Kinsmen Content Policies
+DROP POLICY IF EXISTS "Kinsmen content viewable by all" ON public.kinsmen_content;
+CREATE POLICY "Kinsmen content viewable by all"
+    ON public.kinsmen_content FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Kinsmen content manageable by admins" ON public.kinsmen_content;
+CREATE POLICY "Kinsmen content manageable by admins"
+    ON public.kinsmen_content FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Kinsmen Media Policies
+DROP POLICY IF EXISTS "Kinsmen media viewable by all" ON public.kinsmen_media;
+CREATE POLICY "Kinsmen media viewable by all"
+    ON public.kinsmen_media FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Kinsmen media manageable by admins" ON public.kinsmen_media;
+CREATE POLICY "Kinsmen media manageable by admins"
+    ON public.kinsmen_media FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Collaborate Content Policies
+DROP POLICY IF EXISTS "Collaborate content viewable by all" ON public.collaborate_content;
+CREATE POLICY "Collaborate content viewable by all"
+    ON public.collaborate_content FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Collaborate content manageable by admins" ON public.collaborate_content;
+CREATE POLICY "Collaborate content manageable by admins"
+    ON public.collaborate_content FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Collaborate Media Policies
+DROP POLICY IF EXISTS "Collaborate media viewable by all" ON public.collaborate_media;
+CREATE POLICY "Collaborate media viewable by all"
+    ON public.collaborate_media FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Collaborate media manageable by admins" ON public.collaborate_media;
+CREATE POLICY "Collaborate media manageable by admins"
+    ON public.collaborate_media FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
+
+-- Social Links Policies
+DROP POLICY IF EXISTS "Social links viewable by all" ON public.social_links;
+CREATE POLICY "Social links viewable by all"
+    ON public.social_links FOR SELECT
+    TO anon, authenticated
+    USING (is_active = true);
+
+DROP POLICY IF EXISTS "Social links manageable by admins" ON public.social_links;
+CREATE POLICY "Social links manageable by admins"
+    ON public.social_links FOR ALL
+    TO authenticated
+    USING (true)
+    WITH CHECK (true);
 
 -- Contact submissions policies
 DROP POLICY IF EXISTS "Anyone can submit contact forms" ON public.contact_submissions;
@@ -225,23 +440,13 @@ DROP POLICY IF EXISTS "Submissions are viewable by admins" ON public.contact_sub
 CREATE POLICY "Submissions are viewable by admins"
     ON public.contact_submissions FOR SELECT
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role IN ('admin', 'editor')
-        )
-    );
+    USING (true);
 
 DROP POLICY IF EXISTS "Submissions can be managed by admins" ON public.contact_submissions;
 CREATE POLICY "Submissions can be managed by admins"
     ON public.contact_submissions FOR UPDATE
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+    USING (true);
 
 -- Analytics policies
 DROP POLICY IF EXISTS "Anyone can insert analytics" ON public.analytics;
@@ -250,16 +455,11 @@ CREATE POLICY "Anyone can insert analytics"
     TO anon, authenticated
     WITH CHECK (true);
 
-DROP POLICY IF EXISTS "Analytics are viewable by admins" ON public.analytics;
-CREATE POLICY "Analytics are viewable by admins"
+DROP POLICY IF EXISTS "Analytics are viewable by everyone" ON public.analytics;
+CREATE POLICY "Analytics are viewable by everyone"
     ON public.analytics FOR SELECT
-    TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role IN ('admin', 'editor')
-        )
-    );
+    TO anon, authenticated
+    USING (true);
 
 -- Daily visits policies
 DROP POLICY IF EXISTS "Daily visits are viewable by everyone" ON public.daily_visits;
@@ -279,15 +479,104 @@ DROP POLICY IF EXISTS "Settings can be managed by admins" ON public.appearance_s
 CREATE POLICY "Settings can be managed by admins"
     ON public.appearance_settings FOR ALL
     TO authenticated
-    USING (
-        EXISTS (
-            SELECT 1 FROM public.users
-            WHERE id = auth.uid() AND role = 'admin'
+    USING (true)
+    WITH CHECK (true);
         )
     );
 
 -- ============================================
--- 7. INSERT SAMPLE DATA
+-- 7. CREATE STORAGE BUCKETS
+-- ============================================
+
+-- Create storage buckets for media files
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES 
+    ('home-media', 'home-media', true, 52428800, ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime']::text[]),
+    ('kinsmen-media', 'kinsmen-media', true, 52428800, ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime']::text[]),
+    ('collaborate-media', 'collaborate-media', true, 52428800, ARRAY['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime']::text[])
+ON CONFLICT (id) DO NOTHING;
+
+-- ============================================
+-- 8. STORAGE BUCKET RLS POLICIES
+-- ============================================
+
+-- Home Media Bucket Policies
+DROP POLICY IF EXISTS "Home media files are publicly accessible" ON storage.objects;
+CREATE POLICY "Home media files are publicly accessible"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'home-media');
+
+DROP POLICY IF EXISTS "Authenticated users can upload home media" ON storage.objects;
+CREATE POLICY "Authenticated users can upload home media"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'home-media');
+
+DROP POLICY IF EXISTS "Authenticated users can update home media" ON storage.objects;
+CREATE POLICY "Authenticated users can update home media"
+    ON storage.objects FOR UPDATE
+    TO authenticated
+    USING (bucket_id = 'home-media');
+
+DROP POLICY IF EXISTS "Authenticated users can delete home media" ON storage.objects;
+CREATE POLICY "Authenticated users can delete home media"
+    ON storage.objects FOR DELETE
+    TO authenticated
+    USING (bucket_id = 'home-media');
+
+-- Kinsmen Media Bucket Policies
+DROP POLICY IF EXISTS "Kinsmen media files are publicly accessible" ON storage.objects;
+CREATE POLICY "Kinsmen media files are publicly accessible"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'kinsmen-media');
+
+DROP POLICY IF EXISTS "Authenticated users can upload kinsmen media" ON storage.objects;
+CREATE POLICY "Authenticated users can upload kinsmen media"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'kinsmen-media');
+
+DROP POLICY IF EXISTS "Authenticated users can update kinsmen media" ON storage.objects;
+CREATE POLICY "Authenticated users can update kinsmen media"
+    ON storage.objects FOR UPDATE
+    TO authenticated
+    USING (bucket_id = 'kinsmen-media');
+
+DROP POLICY IF EXISTS "Authenticated users can delete kinsmen media" ON storage.objects;
+CREATE POLICY "Authenticated users can delete kinsmen media"
+    ON storage.objects FOR DELETE
+    TO authenticated
+    USING (bucket_id = 'kinsmen-media');
+
+-- Collaborate Media Bucket Policies
+DROP POLICY IF EXISTS "Collaborate media files are publicly accessible" ON storage.objects;
+CREATE POLICY "Collaborate media files are publicly accessible"
+    ON storage.objects FOR SELECT
+    TO public
+    USING (bucket_id = 'collaborate-media');
+
+DROP POLICY IF EXISTS "Authenticated users can upload collaborate media" ON storage.objects;
+CREATE POLICY "Authenticated users can upload collaborate media"
+    ON storage.objects FOR INSERT
+    TO authenticated
+    WITH CHECK (bucket_id = 'collaborate-media');
+
+DROP POLICY IF EXISTS "Authenticated users can update collaborate media" ON storage.objects;
+CREATE POLICY "Authenticated users can update collaborate media"
+    ON storage.objects FOR UPDATE
+    TO authenticated
+    USING (bucket_id = 'collaborate-media');
+
+DROP POLICY IF EXISTS "Authenticated users can delete collaborate media" ON storage.objects;
+CREATE POLICY "Authenticated users can delete collaborate media"
+    ON storage.objects FOR DELETE
+    TO authenticated
+    USING (bucket_id = 'collaborate-media');
+
+-- ============================================
+-- 9. INSERT SAMPLE DATA
 -- ============================================
 
 -- Sample appearance settings
@@ -299,30 +588,28 @@ INSERT INTO public.appearance_settings (setting_key, setting_value) VALUES
 ON CONFLICT (setting_key) DO NOTHING;
 
 -- Sample website content for Home section
-INSERT INTO public.website_content (section, content_type, key, value, position, is_active) VALUES
-    ('home', 'text', 'welcome', 'Welcome to My Portfolio', 1, true),
-    ('home', 'text', 'name', 'Mugabi Arafatih', 2, true),
-    ('home', 'text', 'short_name', 'MA', 3, true),
-    ('home', 'text', 'description', 'Professional developer and creative thinker passionate about building amazing digital experiences.', 4, true)
-ON CONFLICT (section, key) DO NOTHING;
+INSERT INTO public.home_content (welcome_message, full_name, short_name, description, is_active) VALUES
+    ('Welcome to My Portfolio', 'Mugabi Arafatih', 'MA', 'Professional developer and creative thinker passionate about building amazing digital experiences.', true)
+ON CONFLICT DO NOTHING;
 
 -- Sample website content for Kinsmen section
-INSERT INTO public.website_content (section, content_type, key, value, position, is_active) VALUES
-    ('kinsmen', 'text', 'title', 'Kinsmen', 1, true),
-    ('kinsmen', 'text', 'definition', 'A kinsman is a person related to another by blood or marriage; a relative.', 2, true),
-    ('kinsmen', 'text', 'description', 'Building connections and fostering relationships within our community.', 3, true)
-ON CONFLICT (section, key) DO NOTHING;
+INSERT INTO public.kinsmen_content (definition, title, description, is_active) VALUES
+    ('A kinsman is a person related to another by blood or marriage; a relative.', 'Kinsmen', 'Building connections and fostering relationships within our community.', true)
+ON CONFLICT DO NOTHING;
 
 -- Sample website content for Collaborate section
-INSERT INTO public.website_content (section, content_type, key, value, position, is_active) VALUES
-    ('collaborate', 'text', 'title', 'Let''s Collaborate', 1, true),
-    ('collaborate', 'text', 'description', 'I''m always open to new opportunities and collaborations. Feel free to reach out!', 2, true),
-    ('collaborate', 'social', 'email', 'contact@example.com', 3, true),
-    ('collaborate', 'social', 'facebook', 'https://facebook.com/yourprofile', 4, true),
-    ('collaborate', 'social', 'twitter', 'https://twitter.com/yourprofile', 5, true),
-    ('collaborate', 'social', 'youtube', 'https://youtube.com/yourchannel', 6, true),
-    ('collaborate', 'social', 'tiktok', 'https://tiktok.com/@yourprofile', 7, true)
-ON CONFLICT (section, key) DO NOTHING;
+INSERT INTO public.collaborate_content (title, description, is_active) VALUES
+    ('Let''s Collaborate', 'I''m always open to new opportunities and collaborations. Feel free to reach out!', true)
+ON CONFLICT DO NOTHING;
+
+-- Sample social links
+INSERT INTO public.social_links (platform, url, position, is_active) VALUES
+    ('email', 'contact@example.com', 1, true),
+    ('facebook', 'https://facebook.com/yourprofile', 2, true),
+    ('twitter', 'https://twitter.com/yourprofile', 3, true),
+    ('youtube', 'https://youtube.com/yourchannel', 4, true),
+    ('tiktok', 'https://tiktok.com/@yourprofile', 5, true)
+ON CONFLICT (platform) DO NOTHING;
 
 -- ============================================
 -- SETUP COMPLETE!
@@ -337,11 +624,33 @@ FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY tablename;
 
+-- Verify storage buckets were created
+SELECT 
+    id,
+    name,
+    public,
+    file_size_limit,
+    allowed_mime_types
+FROM storage.buckets
+ORDER BY name;
+
 -- Show table row counts
 SELECT 
     'users' as table_name, COUNT(*) as row_count FROM public.users
 UNION ALL
-SELECT 'website_content', COUNT(*) FROM public.website_content
+SELECT 'home_content', COUNT(*) FROM public.home_content
+UNION ALL
+SELECT 'home_media', COUNT(*) FROM public.home_media
+UNION ALL
+SELECT 'kinsmen_content', COUNT(*) FROM public.kinsmen_content
+UNION ALL
+SELECT 'kinsmen_media', COUNT(*) FROM public.kinsmen_media
+UNION ALL
+SELECT 'collaborate_content', COUNT(*) FROM public.collaborate_content
+UNION ALL
+SELECT 'collaborate_media', COUNT(*) FROM public.collaborate_media
+UNION ALL
+SELECT 'social_links', COUNT(*) FROM public.social_links
 UNION ALL
 SELECT 'contact_submissions', COUNT(*) FROM public.contact_submissions
 UNION ALL

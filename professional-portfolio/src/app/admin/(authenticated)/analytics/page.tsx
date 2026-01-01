@@ -4,7 +4,8 @@ import AnalyticsChart from '@/components/admin/AnalyticsChart'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { formatRelativeDate } from '@/lib/utils/formatters'
-
+import { Download } from 'lucide-react'
+import { showToast } from '@/components/ui/toaster'
 export default function AnalyticsPage() {
     const [submissions, setSubmissions] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -26,66 +27,131 @@ export default function AnalyticsPage() {
         setLoading(false)
     }
 
+    function exportToCSV() {
+        try {
+            if (submissions.length === 0) {
+                showToast('info', 'No submissions to export')
+                return
+            }
+
+            // Create CSV content
+            const headers = ['Full Name', 'Email', 'WhatsApp Number', 'Status', 'Date']
+            const csvRows = [
+                headers.join(','),
+                ...submissions.map(sub => [
+                    `"${sub.full_name}"`,
+                    `"${sub.email}"`,
+                    `"${sub.whatsapp_number || ''}"`,
+                    `"${sub.status || 'pending'}"`,
+                    `"${new Date(sub.created_at).toLocaleString()}"`
+                ].join(','))
+            ]
+
+            const csvContent = csvRows.join('\n')
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+            const link = document.createElement('a')
+            const url = URL.createObjectURL(blob)
+            
+            link.setAttribute('href', url)
+            link.setAttribute('download', `contact_submissions_${new Date().toISOString().split('T')[0]}.csv`)
+            link.style.visibility = 'hidden'
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            
+            showToast('success', 'Submissions exported successfully')
+        } catch (error) {
+            console.error('Export error:', error)
+            showToast('error', 'Failed to export submissions')
+        }
+    }
+
     return (
-        <div className="space-y-10">
-            <div className="border-b-4 border-inherit pb-6">
-                <h1 className="text-4xl font-black uppercase tracking-tighter">Analytics Terminal</h1>
-                <p className="opacity-60 text-xs font-bold uppercase tracking-[0.2em] mt-2">Metrics Oversight and Transmission Log</p>
+        <div className="space-y-10 max-w-7xl">
+            {/* Header */}
+            <div className="pb-8 border-b-2" style={{ borderColor: 'var(--admin-border)' }}>
+                <h1 className="text-3xl md:text-4xl font-bold uppercase tracking-tight">Analytics Dashboard</h1>
+                <p className="mt-3 text-base font-medium opacity-70">Monitor visitor metrics, traffic insights, and contact submissions</p>
             </div>
 
             {/* Analytics Charts */}
-            <div className="admin-card p-10">
+            <div className="admin-card p-8 md:p-10">
+                <h2 className="text-xl md:text-2xl font-bold uppercase tracking-tight mb-8 flex items-center">
+                    <span className="w-2 h-2 bg-inherit invert mr-3"></span>
+                    Visitor Analytics
+                </h2>
                 <AnalyticsChart />
             </div>
 
             {/* Contact Submissions */}
-            <div className="admin-card p-10">
-                <h2 className="text-xl font-black mb-8 uppercase tracking-widest flex items-center">
-                    <span className="w-3 h-3 bg-inherit invert mr-3"></span>
-                    Recent Inbound Signals
-                </h2>
+            <div className="admin-card p-8 md:p-10">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 className="text-xl md:text-2xl font-bold uppercase tracking-tight flex items-center">
+                            <span className="w-2 h-2 bg-inherit invert mr-3"></span>
+                            Contact Submissions
+                        </h2>
+                        <p className="text-sm opacity-60 mt-2 font-medium">Recent inquiries from your website visitors</p>
+                    </div>
+                    <button
+                        onClick={exportToCSV}
+                        disabled={submissions.length === 0}
+                        className="admin-button flex items-center gap-2 px-5 py-3 text-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:scale-105"
+                        title="Export all submissions to CSV file"
+                    >
+                        <Download size={18} />
+                        <span className="font-bold uppercase">Export CSV</span>
+                    </button>
+                </div>
 
                 {loading ? (
-                    <div className="text-center py-12 opacity-60 italic uppercase tracking-widest font-bold">Synchronizing...</div>
+                    <div className="text-center py-20 opacity-60 font-medium animate-pulse">
+                        <div className="inline-block w-3 h-3 border-2 border-inherit border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <p className="text-sm font-bold uppercase tracking-widest">Loading submissions...</p>
+                    </div>
                 ) : submissions.length === 0 ? (
-                    <p className="opacity-50 text-center py-12 font-bold uppercase tracking-widest text-xs">No active signals detected</p>
+                    <div className="text-center py-20 border-2 border-dashed" style={{ borderColor: 'var(--admin-border)' }}>
+                        <div className="inline-block p-4 border-2 mb-4" style={{ borderColor: 'var(--admin-border)' }}>
+                            <Download size={32} className="opacity-30" />
+                        </div>
+                        <p className="font-bold uppercase tracking-wide text-base mb-2">No Submissions Yet</p>
+                        <p className="text-sm opacity-50 font-medium">Contact form submissions will appear here</p>
+                    </div>
                 ) : (
-                    <div className="overflow-x-auto border-t-2 border-inherit">
-                        <table className="min-w-full divide-y-2 divide-inherit">
-                            <thead>
-                                <tr className="bg-inherit invert text-inherit">
-                                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest">
-                                        Sender
+                    <div className="overflow-x-auto border-2" style={{ borderColor: 'var(--admin-border)' }}>
+                        <table className="min-w-full divide-y-2" style={{ borderColor: 'var(--admin-border)' }}>
+                            <thead style={{ backgroundColor: 'var(--admin-fg)', color: 'var(--admin-bg)' }}>
+                                <tr>
+                                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide">
+                                        Contact
                                     </th>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest">
-                                        Channel
+                                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide">
+                                        WhatsApp
                                     </th>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest">
-                                        Priority
+                                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide">
+                                        Status
                                     </th>
-                                    <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest">
-                                        Timestamp
+                                    <th className="px-6 py-4 text-left text-xs font-bold uppercase tracking-wide">
+                                        Date
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-inherit">
+                            <tbody className="divide-y-2" style={{ borderColor: 'var(--admin-border)' }}>
                                 {submissions.map((submission) => (
-                                    <tr key={submission.id} className="hover:bg-inherit hover:invert hover:cursor-crosshair transition-colors group">
-                                        <td className="px-6 py-6 whitespace-nowrap">
-                                            <div className="text-sm font-black uppercase tracking-tight">{submission.full_name}</div>
-                                            <div className="text-[10px] opacity-60 font-mono tracking-tighter">{submission.email}</div>
+                                    <tr key={submission.id} className="transition-colors" style={{ cursor: 'default' }}>
+                                        <td className="px-6 py-4">
+                                            <div className="text-sm font-bold">{submission.full_name}</div>
+                                            <div className="text-xs opacity-60 mt-1">{submission.email}</div>
                                         </td>
-                                        <td className="px-6 py-6 whitespace-nowrap text-[10px] font-mono opacity-80">
-                                            {submission.whatsapp_number || '---'}
+                                        <td className="px-6 py-4 text-sm opacity-70">
+                                            {submission.whatsapp_number || '—'}
                                         </td>
-                                        <td className="px-6 py-6 whitespace-nowrap">
-                                            <span className={`px-4 py-1 border-2 font-black text-[10px] uppercase tracking-widest ${submission.status === 'pending' ? 'border-inherit opacity-40' :
-                                                'border-inherit invert bg-inherit'
-                                                }`}>
-                                                {submission.status}
+                                        <td className="px-6 py-4">
+                                            <span className="px-3 py-1 border-2 text-xs font-bold uppercase tracking-wide inline-block" style={{ borderColor: 'var(--admin-border)' }}>
+                                                {submission.status || 'pending'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-6 whitespace-nowrap text-[10px] font-bold opacity-60">
+                                        <td className="px-6 py-4 text-xs font-medium opacity-60">
                                             {formatRelativeDate(submission.created_at)}
                                         </td>
                                     </tr>

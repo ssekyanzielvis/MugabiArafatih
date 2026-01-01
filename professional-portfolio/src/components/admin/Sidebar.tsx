@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
     LayoutDashboard,
@@ -12,7 +13,9 @@ import {
     ChevronLeft,
     ChevronRight,
     Sun,
-    Moon
+    Moon,
+    FolderOpen,
+    Share2
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminTheme } from './AdminThemeContext'
@@ -21,6 +24,8 @@ import { showToast } from '@/components/ui/toaster'
 const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Content', path: '/admin/content', icon: FileText },
+    { name: 'Media Library', path: '/admin/media', icon: FolderOpen },
+    { name: 'Social Links', path: '/admin/social', icon: Share2 },
     { name: 'Analytics', path: '/admin/analytics', icon: BarChart3 },
     { name: 'Users', path: '/admin/users', icon: Users },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
@@ -55,9 +60,14 @@ export default function AdminSidebar() {
             <div className="p-6 border-b-2 flex items-center justify-between min-h-[88px]" style={{ borderColor: 'var(--admin-border)' }}>
                 {!isCollapsed && (
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 border-2 flex items-center justify-center" style={{ borderColor: 'var(--admin-border)' }}>
-                            <span className="font-bold text-xl uppercase">MA</span>
-                        </div>
+                        <Image
+                            src="/logo.png"
+                            alt="Portfolio Logo"
+                            width={48}
+                            height={48}
+                            className="object-contain"
+                            priority
+                        />
                         <div>
                             <h2 className="font-bold text-lg uppercase tracking-tight">Admin</h2>
                             <p className="text-xs opacity-60 font-medium">Dashboard</p>

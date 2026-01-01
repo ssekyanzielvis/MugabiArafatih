@@ -24,12 +24,18 @@ export default function CollaboratePage() {
                 <TwoColumnLayout section="collaborate" />
             </div>
 
-            {/* Contact Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 animate-fadeIn" style={{ animationDelay: '0.4s' }}>
-                <div className="order-2 lg:order-1">
+            {/* Contact Channels - Full Width */}
+            <div className="animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+                <div className="mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-6">Contact Channels</h2>
                     <SocialLinks />
                 </div>
-                <div className="order-1 lg:order-2">
+            </div>
+
+            {/* Contact Form - Full Width */}
+            <div className="animate-fadeIn" style={{ animationDelay: '0.6s' }}>
+                <div className="mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-6">Send a Message</h2>
                     <ContactForm />
                 </div>
             </div>

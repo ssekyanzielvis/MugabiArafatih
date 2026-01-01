@@ -1,0 +1,145 @@
+3.2 Page Layout Structure
+3.2.1 Home Tab
+text
+┌─────────────────────────────────────────────┐
+│           Header with Navigation            │
+├──────────────┬──────────────────────────────┤
+│              │                              │
+│   Left       │         Right                │
+│   Column     │         Column               │
+│              │                              │
+│ • Images     │ • Welcome Message (Large)    │
+│ • Videos     │ • Full Name                  │
+│              │ • Short Name/Initials        │
+│              │ • Professional Description   │
+│              │                              │
+└──────────────┴──────────────────────────────┘
+3.2.2 Kinsmen Tab
+text
+┌─────────────────────────────────────────────┐
+│           Header with Navigation            │
+├──────────────┬──────────────────────────────┤
+│              │                              │
+│   Left       │         Right                │
+│   Column     │         Column               │
+│              │                              │
+│ • Related    │ • "Kinsmen" Definition       │
+│   Images     │ • Title                      │
+│ • Videos     │ • Detailed Description       │
+│              │                              │
+└──────────────┴──────────────────────────────┘
+3.2.3 Collaborate Tab
+text
+┌─────────────────────────────────────────────┐
+│           Header with Navigation            │
+├──────────────┬──────────────────────────────┤
+│              │                              │
+│   Left       │         Right                │
+│   Column     │         Column               │
+│              │                              │
+│ • Collaboration│ • Collaboration Title      │
+│   Images      │ • Collaboration Description │
+│ • Videos      │                              │
+├──────────────┼──────────────────────────────┤
+│              │  Contact Channels:           │
+│              │  • Email                     │
+│              │  • Facebook                  │
+│              │  • TikTok                    │
+│              │  • YouTube                   │
+│              │  • Twitter/X                 │
+│              │                              │
+│              │  Contact Form:               │
+│              │  • Full Name (input)         │
+│              │  • Email (input)             │
+│              │  • WhatsApp Number (input)   │
+│              │  • Submit Button             │
+└──────────────┴──────────────────────────────┘
+3.3 Content Management
+All visitor website content is dynamically loaded from Supabase database, allowing real-time updates via Admin Dashboard.
+
+4. Admin Dashboard Specifications
+4.1 Access & Authentication
+Login System: Email/password authentication via Supabase Auth
+
+Role Management: Super Admin can register/remove other admins
+
+Session Management: Secure token-based sessions
+
+4.2 Dashboard Modules
+4.2.1 Content Management Module
+text
+1. HOME PAGE EDITOR
+   • Welcome Message Editor
+   • Name/Short Name Configuration
+   • Professional Description Editor
+   • Media Uploader (Images/Videos for left column)
+   • Preview Mode
+
+2. KINSMEN PAGE EDITOR
+   • Definition Text Editor
+   • Title Configuration
+   • Description Editor
+   • Media Management for left column
+   • Live Preview
+
+3. COLLABORATE PAGE EDITOR
+   • Title & Description Editor
+   • Contact Channels Management
+     - Platform Selection (Email, Social Media)
+     - URL/Link Configuration
+   • Media Upload for collaboration visuals
+   • Contact Form Field Configuration
+4.2.2 Analytics Dashboard
+text
+1. VISITOR ANALYTICS
+   • Real-time Visitor Counter
+   • Daily/Weekly/Monthly Visit Trends
+   • Page-specific Traffic Analysis
+
+2. DATA VISUALIZATION
+   • Line Charts (Visit Trends Over Time)
+   • Bar Graphs (Page Popularity)
+   • Pie Charts (Traffic Sources)
+   • Heat Maps (User Engagement)
+
+3. PREDICTIVE ANALYTICS
+   • Trend Analysis Algorithms
+   • Future Visit Predictions
+   • Peak Traffic Time Identification
+   • Growth Projections
+
+4. FORM SUBMISSIONS TRACKING
+   • Contact Form Submission Logs
+   • Lead Management Interface
+   • Export Capabilities (CSV/Excel)
+4.2.3 System Configuration
+text
+1. APPEARANCE CUSTOMIZATION
+   • Color Scheme Management
+   • Font Selection & Sizing
+   • Layout Adjustments
+   • Theme Presets
+
+2. USER MANAGEMENT
+   • Admin User CRUD Operations
+   • Permission Levels Assignment
+   • Activity Logs
+
+3. MEDIA LIBRARY
+   • Centralized File Storage
+   • Image/Video Optimization
+   • Storage Analytics
+   • Bulk Operations
+
+4. BACKUP & RESTORE
+   • Database Backup Configuration
+   • Content Versioning
+   • Disaster Recovery Options
+4.3 Dashboard Interface Design
+Theme: Light professional theme with high contrast
+
+Layout: Sidebar navigation with collapsible sections
+
+Responsive: Works on desktop and tablet devices
+
+Real-time Updates: Live content previews

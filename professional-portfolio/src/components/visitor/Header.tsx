@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
 
@@ -58,21 +59,19 @@ export default function Header() {
                     {/* Logo */}
                     <Link 
                         href="/" 
-                        className="flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        className="flex items-center group focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                         style={{ color: 'var(--theme-fg)' }}
                     >
-                        <div 
-                            className="w-12 h-12 border-2 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300"
-                            style={{ 
-                                borderColor: 'var(--theme-fg)',
-                                backgroundColor: 'var(--theme-bg)' 
-                            }}
-                        >
-                            <span className="font-bold text-xl">MA</span>
+                        <div className="transform group-hover:scale-110 transition-transform duration-300">
+                            <Image
+                                src="/logo.png"
+                                alt="Portfolio Logo"
+                                width={56}
+                                height={56}
+                                className="object-contain"
+                                priority
+                            />
                         </div>
-                        <span className="text-xl font-bold hidden sm:block">
-                            Portfolio
-                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}

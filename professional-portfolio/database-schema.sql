@@ -11,21 +11,98 @@ CREATE TABLE users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Website content table
-CREATE TABLE website_content (
+-- ============================================
+-- HOME PAGE CONTENT TABLE
+-- ============================================
+CREATE TABLE home_content (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    section TEXT NOT NULL CHECK (section IN ('home', 'kinsmen', 'collaborate')),
-    content_type TEXT NOT NULL CHECK (content_type IN ('text', 'media', 'social')),
-    key TEXT NOT NULL,
-    value TEXT,
-    media_url TEXT,
-    media_type TEXT CHECK (media_type IN ('image', 'video')),
+    welcome_message TEXT,
+    full_name TEXT,
+    short_name TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- HOME PAGE MEDIA TABLE
+CREATE TABLE home_media (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- ============================================
+-- KINSMEN PAGE CONTENT TABLE
+-- ============================================
+CREATE TABLE kinsmen_content (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    definition TEXT,
+    title TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- KINSMEN PAGE MEDIA TABLE
+CREATE TABLE kinsmen_media (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- ============================================
+-- COLLABORATE PAGE CONTENT TABLE
+-- ============================================
+CREATE TABLE collaborate_content (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    title TEXT,
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- COLLABORATE PAGE MEDIA TABLE
+CREATE TABLE collaborate_media (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    media_url TEXT NOT NULL,
+    media_type TEXT NOT NULL CHECK (media_type IN ('image', 'video')),
+    caption TEXT,
+    position INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    created_by UUID REFERENCES users(id)
+);
+
+-- SOCIAL MEDIA LINKS TABLE
+CREATE TABLE social_links (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    platform TEXT NOT NULL CHECK (platform IN ('email', 'facebook', 'tiktok', 'youtube', 'twitter')),
+    url TEXT NOT NULL,
     position INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_by UUID REFERENCES users(id),
-    UNIQUE(section, key)
+    UNIQUE(platform)
 );
 
 -- Contact form submissions
