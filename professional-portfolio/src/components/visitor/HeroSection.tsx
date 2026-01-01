@@ -12,33 +12,52 @@ export default async function HeroSection() {
         .order('position', { ascending: true })
 
     const welcome = content?.find(item => item.key === 'welcome')?.value || 'Welcome'
-    const name = content?.find(item => item.key === 'name')?.value || 'Your Name'
-    const shortName = content?.find(item => item.key === 'short_name')?.value || 'YN'
-    const description = content?.find(item => item.key === 'description')?.value || 'Professional description'
+    const name = content?.find(item => item.key === 'name')?.value || 'Mugabi Arafatih'
+    const shortName = content?.find(item => item.key === 'short_name')?.value || 'MA'
+    const description = content?.find(item => item.key === 'description')?.value || 'Building exceptional digital experiences with precision and passion.'
 
     return (
-        <section className="py-12 md:py-20">
-            <div className="text-center space-y-6 animate-fadeIn">
-                <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold gradient-text">
-                    {welcome}
-                </h1>
-
-                <div className="flex items-center justify-center space-x-4">
-                    <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-2xl">
-                        <span className="text-white font-bold text-2xl md:text-3xl">{shortName}</span>
-                    </div>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-                        {name}
-                    </h2>
+        <section className="py-12 md:py-16 lg:py-24">
+            <div className="text-center space-y-8 md:space-y-12 animate-fadeIn">
+                {/* Welcome Text */}
+                <div className="space-y-4">
+                    <p className="text-lg md:text-xl font-bold uppercase tracking-widest opacity-70">
+                        {welcome}
+                    </p>
+                    <div 
+                        className="w-16 h-1 mx-auto"
+                        style={{ backgroundColor: 'var(--theme-fg)' }}
+                    />
                 </div>
 
-                <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+                {/* Name and Avatar */}
+                <div className="flex flex-col items-center gap-6">
+                    <div 
+                        className="w-24 h-24 md:w-32 md:h-32 border-4 flex items-center justify-center transform hover:scale-110 transition-transform duration-300"
+                        style={{ borderColor: 'var(--theme-fg)' }}
+                    >
+                        <span className="text-3xl md:text-4xl font-bold">{shortName}</span>
+                    </div>
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight">
+                        {name}
+                    </h1>
+                </div>
+
+                {/* Description */}
+                <p className="text-lg md:text-xl lg:text-2xl max-w-4xl mx-auto leading-relaxed font-medium opacity-90 px-4">
                     {description}
                 </p>
 
-                <div className="flex justify-center space-x-4 pt-6">
-                    <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-transparent rounded-full"></div>
-                    <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-transparent rounded-full"></div>
+                {/* Decorative Lines */}
+                <div className="flex justify-center gap-4 pt-4">
+                    <div 
+                        className="w-20 md:w-32 h-1"
+                        style={{ backgroundColor: 'var(--theme-fg)' }}
+                    />
+                    <div 
+                        className="w-20 md:w-32 h-1 opacity-50"
+                        style={{ backgroundColor: 'var(--theme-fg)' }}
+                    />
                 </div>
             </div>
         </section>

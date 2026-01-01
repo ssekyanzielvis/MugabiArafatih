@@ -1,9 +1,6 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import Header from '@/components/visitor/Header'
 import '../globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
     title: 'Professional Portfolio - Mugabi Arafatih',
@@ -16,11 +13,23 @@ export default function VisitorLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="dark bg-gray-900 text-white min-h-screen antialiased">
+        <div className="visitor-theme min-h-screen antialiased">
             <Header />
-            <main className="container mx-auto px-4 py-8 max-w-7xl">
+            <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 max-w-7xl">
                 {children}
             </main>
+            <footer className="border-t-2 mt-16 py-8">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p className="text-sm font-medium">
+                            © {new Date().getFullYear()} Mugabi Arafatih. All rights reserved.
+                        </p>
+                        <p className="text-sm font-medium">
+                            Built with Next.js & Supabase
+                        </p>
+                    </div>
+                </div>
+            </footer>
         </div>
     )
 }

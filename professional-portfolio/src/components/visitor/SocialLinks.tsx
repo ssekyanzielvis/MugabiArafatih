@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { Mail, Facebook, Twitter, Youtube } from 'lucide-react'
+import { Mail, Facebook, Twitter, Youtube, ExternalLink } from 'lucide-react'
 
 const iconMap: Record<string, any> = {
     email: Mail,
@@ -29,8 +29,16 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-white">Connect With Me</h3>
+        <div className="visitor-card space-y-6">
+            <div>
+                <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-2">
+                    Connect With Me
+                </h3>
+                <div 
+                    className="w-16 h-1"
+                    style={{ backgroundColor: 'var(--theme-fg)' }}
+                />
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {socialLinks.map((link) => {
@@ -45,17 +53,25 @@ export default async function SocialLinks() {
                             href={href}
                             target={isEmail ? undefined : '_blank'}
                             rel={isEmail ? undefined : 'noopener noreferrer'}
-                            className="flex items-center space-x-3 p-4 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700 hover:border-blue-500 hover:bg-gray-800 transition-all duration-300 group"
+                            className="flex items-center gap-3 p-4 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
+                            style={{ borderColor: 'var(--theme-fg)' }}
+                            aria-label={`${label}: ${link.value}`}
                         >
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                                {typeof Icon === 'function' ? <Icon /> : <Icon size={20} className="text-white" />}
+                            <div 
+                                className="w-12 h-12 border-2 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200"
+                                style={{ borderColor: 'var(--theme-fg)' }}
+                            >
+                                {typeof Icon === 'function' ? <Icon /> : <Icon size={22} aria-hidden="true" />}
                             </div>
-                            <div className="flex-1">
-                                <p className="font-medium text-white group-hover:text-blue-400 transition-colors">
+                            <div className="flex-1 min-w-0">
+                                <p className="font-bold text-sm uppercase tracking-wide mb-1">
                                     {label}
                                 </p>
-                                <p className="text-sm text-gray-400 truncate">{link.value}</p>
+                                <p className="text-sm truncate opacity-70">{link.value}</p>
                             </div>
+                            {!isEmail && (
+                                <ExternalLink size={18} className="flex-shrink-0 opacity-50" aria-hidden="true" />
+                            )}
                         </a>
                     )
                 })}

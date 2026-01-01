@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
     LayoutDashboard,
     FileText,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useAdminTheme } from './AdminThemeContext'
+import { showToast } from '@/components/ui/toaster'
 
 const navItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
@@ -27,39 +28,55 @@ const navItems = [
 
 export default function AdminSidebar() {
     const pathname = usePathname()
+    const router = useRouter()
     const [isCollapsed, setIsCollapsed] = useState(false)
     const { theme, toggleTheme } = useAdminTheme()
 
     const handleLogout = async () => {
-        // Logout functionality will be implemented with API route
-        window.location.href = '/admin/login'
+        try {
+            showToast('info', 'Logging out...')
+            // Add actual logout API call here
+            setTimeout(() => {
+                router.push('/admin/login')
+            }, 500)
+        } catch (error) {
+            showToast('error', 'Failed to logout')
+        }
     }
 
     return (
-        <aside className={`admin-panel border-r border-inherit transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} flex flex-col shadow-none`}>
+        <aside 
+            className={`admin-panel border-r-2 transition-all duration-300 ${
+                isCollapsed ? 'w-20' : 'w-64'
+            } flex flex-col relative`}
+            style={{ borderColor: 'var(--admin-border)' }}
+        >
             {/* Header */}
-            <div className="p-6 border-b border-inherit flex items-center justify-between">
+            <div className="p-6 border-b-2 flex items-center justify-between min-h-[88px]" style={{ borderColor: 'var(--admin-border)' }}>
                 {!isCollapsed && (
-                    <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-inherit border border-inherit rounded-lg flex items-center justify-center">
-                            <span className="font-bold text-xl uppercase">M</span>
+                    <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 border-2 flex items-center justify-center" style={{ borderColor: 'var(--admin-border)' }}>
+                            <span className="font-bold text-xl uppercase">MA</span>
                         </div>
                         <div>
-                            <h2 className="font-bold text-lg">Admin</h2>
-                            <p className="text-xs opacity-60">Dashboard</p>
+                            <h2 className="font-bold text-lg uppercase tracking-tight">Admin</h2>
+                            <p className="text-xs opacity-60 font-medium">Dashboard</p>
                         </div>
                     </div>
                 )}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="p-2 hover:invert transition-colors"
+                    className="p-2 border-2 transition-all hover:shadow-[2px_2px_0_var(--admin-border)] hover:translate-x-[-1px] hover:translate-y-[-1px] focus:outline-none focus-visible:ring-2"
+                    style={{ borderColor: 'var(--admin-border)' }}
+                    aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                    title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
                 >
                     {isCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                 </button>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto" role="navigation" aria-label="Main navigation">
                 {navItems.map((item) => {
                     const Icon = item.icon
                     const isActive = pathname === item.path
@@ -68,37 +85,43 @@ export default function AdminSidebar() {
                         <Link
                             key={item.path}
                             href={item.path}
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-none transition-all duration-200 border border-transparent ${isActive
-                                ? 'bg-inherit invert'
-                                : 'hover:bg-inherit hover:invert'
-                                }`}
+                            className={`flex items-center gap-3 px-4 py-3 border-2 transition-all duration-200 font-semibold focus:outline-none focus-visible:ring-2 ${
+                                isActive
+                                    ? 'admin-button'
+                                    : 'border-transparent hover:border-inherit'
+                            }`}
+                            style={isActive ? {} : { borderColor: 'transparent' }}
                             title={isCollapsed ? item.name : undefined}
+                            aria-current={isActive ? 'page' : undefined}
                         >
-                            <Icon size={20} />
-                            {!isCollapsed && <span className="font-medium">{item.name}</span>}
+                            <Icon size={20} aria-hidden="true" />
+                            {!isCollapsed && <span>{item.name}</span>}
                         </Link>
                     )
                 })}
             </nav>
 
             {/* Footer Actions */}
-            <div className="p-4 border-t border-inherit space-y-2">
+            <div className="p-4 border-t-2 space-y-2" style={{ borderColor: 'var(--admin-border)' }}>
                 <button
                     onClick={toggleTheme}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-none hover:bg-inherit hover:invert transition-all duration-200 w-full"
-                    title={isCollapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
+                    className="flex items-center gap-3 px-4 py-3 border-2 border-transparent hover:border-inherit transition-all duration-200 w-full font-semibold focus:outline-none focus-visible:ring-2"
+                    title={isCollapsed ? (theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode') : undefined}
+                    aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
                 >
-                    {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-                    {!isCollapsed && <span className="font-medium">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
+                    {theme === 'light' ? <Moon size={20} aria-hidden="true" /> : <Sun size={20} aria-hidden="true" />}
+                    {!isCollapsed && <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
                 </button>
 
                 <button
                     onClick={handleLogout}
-                    className="flex items-center space-x-3 px-4 py-3 rounded-none hover:bg-red-600 hover:text-white transition-all duration-200 w-full"
+                    className="flex items-center gap-3 px-4 py-3 border-2 transition-all duration-200 w-full font-semibold hover:bg-red-600 hover:text-white hover:border-red-600 focus:outline-none focus-visible:ring-2"
+                    style={{ borderColor: 'var(--admin-border)' }}
                     title={isCollapsed ? 'Logout' : undefined}
+                    aria-label="Logout"
                 >
-                    <LogOut size={20} />
-                    {!isCollapsed && <span className="font-medium">Logout</span>}
+                    <LogOut size={20} aria-hidden="true" />
+                    {!isCollapsed && <span>Logout</span>}
                 </button>
             </div>
         </aside>

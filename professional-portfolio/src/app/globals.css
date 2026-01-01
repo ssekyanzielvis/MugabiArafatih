@@ -158,58 +158,144 @@ body {
   outline-offset: 2px;
 }
 
-/* Admin Panel B&W Theme */
+/* Global Theme Variables - Black & White System */
 :root {
+  --theme-bg: #000000;
+  --theme-fg: #ffffff;
+  --theme-primary: #000000;
+  --theme-secondary: #ffffff;
+  --theme-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  
+  /* Admin specific variables */
   --admin-bg: #ffffff;
   --admin-fg: #000000;
   --admin-border: #000000;
-  --admin-accent: #000000;
-  --admin-muted: #f3f4f6;
-  --admin-chart-1: #000000;
-  --admin-chart-2: #4b5563;
-  --admin-chart-3: #9ca3af;
-  --admin-chart-4: #d1d5db;
+  --admin-hover: #f3f4f6;
+  --admin-muted: #666666;
 }
 
 .admin-theme-dark {
   --admin-bg: #000000;
   --admin-fg: #ffffff;
   --admin-border: #ffffff;
-  --admin-accent: #ffffff;
-  --admin-muted: #1f2937;
-  --admin-chart-1: #ffffff;
-  --admin-chart-2: #9ca3af;
-  --admin-chart-3: #4b5563;
-  --admin-chart-4: #1f2937;
+  --admin-hover: #1a1a1a;
+  --admin-muted: #999999;
 }
 
+/* Admin Panel Styles */
 .admin-panel {
   background-color: var(--admin-bg);
   color: var(--admin-fg);
   border-color: var(--admin-border);
+  font-family: var(--theme-font);
 }
 
 .admin-card {
   background-color: var(--admin-bg);
-  border: 1px solid var(--admin-border);
+  border: 2px solid var(--admin-border);
   color: var(--admin-fg);
+  box-shadow: none;
+  transition: all 0.2s ease;
+}
+
+.admin-card:hover {
+  box-shadow: 4px 4px 0 var(--admin-border);
+  transform: translate(-2px, -2px);
 }
 
 .admin-button {
   background-color: var(--admin-fg);
   color: var(--admin-bg);
-  border: 1px solid var(--admin-border);
-  transition: all 0.2s;
+  border: 2px solid var(--admin-border);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.admin-button:hover {
-  filter: invert(1);
+.admin-button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--admin-border);
+}
+
+.admin-button:active:not(:disabled) {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 var(--admin-border);
+}
+
+.admin-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-input {
   background-color: var(--admin-bg);
   color: var(--admin-fg);
-  border: 1px solid var(--admin-border);
+  border: 2px solid var(--admin-border);
+  padding: 0.75rem 1rem;
+  font-family: var(--theme-font);
+  transition: all 0.2s ease;
+}
+
+.admin-input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0 var(--admin-border);
+  transform: translate(-2px, -2px);
+}
+
+.admin-input::placeholder {
+  color: var(--admin-muted);
+}
+
+/* Visitor Theme Styles */
+.visitor-theme {
+  background-color: var(--theme-bg);
+  color: var(--theme-fg);
+  font-family: var(--theme-font);
+}
+
+.visitor-card {
+  background-color: var(--theme-bg);
+  border: 2px solid var(--theme-fg);
+  color: var(--theme-fg);
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.visitor-card:hover {
+  box-shadow: 8px 8px 0 var(--theme-fg);
+  transform: translate(-4px, -4px);
+}
+
+.visitor-button {
+  background-color: var(--theme-fg);
+  color: var(--theme-bg);
+  border: 2px solid var(--theme-fg);
+  padding: 0.875rem 2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.visitor-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--theme-fg);
+}
+
+.visitor-input {
+  background-color: var(--theme-bg);
+  color: var(--theme-fg);
+  border: 2px solid var(--theme-fg);
+  padding: 0.875rem 1rem;
+  font-family: var(--theme-font);
+  transition: all 0.2s ease;
+}
+
+.visitor-input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0 var(--theme-fg);
+  transform: translate(-2px, -2px);
 }
 
 /* Selection */

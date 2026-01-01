@@ -2,26 +2,25 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 const buttonVariants = cva(
-    'inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+    'inline-flex items-center justify-center text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed',
     {
         variants: {
             variant: {
-                default: 'bg-blue-600 text-white hover:bg-blue-700',
-                destructive: 'bg-red-600 text-white hover:bg-red-700',
-                outline: 'border border-gray-300 bg-white hover:bg-gray-100',
-                secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-                ghost: 'hover:bg-gray-100',
-                link: 'text-blue-600 underline-offset-4 hover:underline',
+                admin: 'admin-button',
+                visitor: 'visitor-button',
+                outline: 'border-2 bg-transparent hover:shadow-[4px_4px_0] hover:translate-x-[-2px] hover:translate-y-[-2px]',
+                ghost: 'border-2 border-transparent hover:border-inherit',
+                destructive: 'bg-red-600 text-white border-2 border-red-600 hover:bg-red-700 hover:border-red-700',
             },
             size: {
-                default: 'h-10 px-4 py-2',
-                sm: 'h-9 px-3',
-                lg: 'h-11 px-8',
-                icon: 'h-10 w-10',
+                default: 'h-11 px-6 py-3',
+                sm: 'h-9 px-4 py-2 text-xs',
+                lg: 'h-13 px-8 py-4 text-base',
+                icon: 'h-11 w-11',
             },
         },
         defaultVariants: {
-            variant: 'default',
+            variant: 'admin',
             size: 'default',
         },
     }
