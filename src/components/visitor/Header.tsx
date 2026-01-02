@@ -44,14 +44,9 @@ export default function Header() {
 
     return (
         <header 
-            className={`sticky top-0 z-50 transition-all duration-300 border-b-2 ${
-                isScrolled 
-                    ? 'shadow-[0_4px_0_var(--theme-fg)]' 
-                    : ''
-            }`}
+            className="sticky top-0 z-50 transition-all duration-300"
             style={{
                 backgroundColor: 'var(--theme-bg)',
-                borderColor: 'var(--theme-fg)',
             }}
         >
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 max-w-7xl">
@@ -80,15 +75,14 @@ export default function Header() {
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`px-6 py-3 transition-all duration-200 font-semibold border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+                                className={`px-4 py-2 text-xs transition-all duration-200 font-semibold focus:outline-none ${
                                     pathname === item.path
                                         ? 'visitor-button'
-                                        : ''
+                                        : 'hover:opacity-80'
                                 }`}
                                 style={{
                                     backgroundColor: pathname === item.path ? 'var(--theme-fg)' : 'transparent',
                                     color: pathname === item.path ? 'var(--theme-bg)' : 'var(--theme-fg)',
-                                    borderColor: 'var(--theme-fg)',
                                 }}
                             >
                                 {item.name}

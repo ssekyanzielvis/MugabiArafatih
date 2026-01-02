@@ -53,7 +53,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="full_name" 
-                        className="block text-sm font-semibold mb-3 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
                     >
                         Full Name <span className="text-red-500">*</span>
                     </label>
@@ -70,7 +70,7 @@ export default function ContactForm() {
                     {errors.full_name && (
                         <p 
                             id="full_name-error" 
-                            className="mt-2 text-sm font-medium"
+                            className="mt-1 text-xs font-medium"
                             role="alert"
                             style={{ color: 'var(--theme-fg)' }}
                         >
@@ -83,7 +83,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="email" 
-                        className="block text-sm font-semibold mb-3 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
                     >
                         Email Address <span className="text-red-500">*</span>
                     </label>
@@ -100,7 +100,7 @@ export default function ContactForm() {
                     {errors.email && (
                         <p 
                             id="email-error" 
-                            className="mt-2 text-sm font-medium"
+                            className="mt-1 text-xs font-medium"
                             role="alert"
                             style={{ color: 'var(--theme-fg)' }}
                         >
@@ -109,11 +109,11 @@ export default function ContactForm() {
                     )}
                 </div>
 
-                {/* WhatsApp Number */}
+                {/* WhatsApp Number */
                 <div>
                     <label 
                         htmlFor="whatsapp_number" 
-                        className="block text-sm font-semibold mb-3 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
                     >
                         WhatsApp Number
                     </label>
@@ -129,7 +129,7 @@ export default function ContactForm() {
                     {errors.whatsapp_number && (
                         <p 
                             id="whatsapp-error" 
-                            className="mt-2 text-sm font-medium"
+                            className="mt-1 text-xs font-medium"
                             role="alert"
                             style={{ color: 'var(--theme-fg)' }}
                         >
@@ -142,7 +142,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="message" 
-                        className="block text-sm font-semibold mb-3 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
                     >
                         Message
                     </label>
@@ -159,22 +159,22 @@ export default function ContactForm() {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="visitor-button w-full flex items-center justify-center gap-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-none"
+                    className="visitor-button w-full flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isSubmitting ? (
                         <>
-                            <Loader2 size={24} className="animate-spin" />
+                            <Loader2 size={18} className="animate-spin" />
                             <span>Sending...</span>
                         </>
                     ) : (
                         <>
-                            <Send size={24} />
+                            <Send size={18} />
                             <span>Send Message</span>
                         </>
                     )}
                 </button>
 
-                <p className="text-sm text-center opacity-70">
+                <p className="text-xs text-center opacity-70">
                     Fields marked with <span className="text-red-500">*</span> are required
                 </p>
             </form>

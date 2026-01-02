@@ -193,35 +193,36 @@ body {
 
 .admin-card {
   background-color: var(--admin-bg);
-  border: 2px solid var(--admin-border);
+  border: none;
   color: var(--admin-fg);
   box-shadow: none;
   transition: all 0.2s ease;
 }
 
 .admin-card:hover {
-  box-shadow: 4px 4px 0 var(--admin-border);
-  transform: translate(-2px, -2px);
+  box-shadow: none;
+  transform: none;
 }
 
 .admin-button {
   background-color: var(--admin-fg);
   color: var(--admin-bg);
-  border: 2px solid var(--admin-border);
-  padding: 0.75rem 1.5rem;
+  border: none;
+  padding: 0.5rem 1rem;
   font-weight: 600;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .admin-button:hover:not(:disabled) {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 var(--admin-border);
+  transform: none;
+  box-shadow: none;
+  opacity: 0.8;
 }
 
 .admin-button:active:not(:disabled) {
-  transform: translate(0, 0);
-  box-shadow: 2px 2px 0 var(--admin-border);
+  transform: none;
+  box-shadow: none;
 }
 
 .admin-button:disabled {
@@ -232,16 +233,16 @@ body {
 .admin-input {
   background-color: var(--admin-bg);
   color: var(--admin-fg);
-  border: 2px solid var(--admin-border);
-  padding: 0.75rem 1rem;
+  border: none;
+  padding: 0.5rem 0.75rem;
   font-family: var(--theme-font);
   transition: all 0.2s ease;
 }
 
 .admin-input:focus {
   outline: none;
-  box-shadow: 4px 4px 0 var(--admin-border);
-  transform: translate(-2px, -2px);
+  box-shadow: none;
+  transform: none;
 }
 
 .admin-input::placeholder {
@@ -257,45 +258,46 @@ body {
 
 .visitor-card {
   background-color: var(--theme-bg);
-  border: 2px solid var(--theme-fg);
+  border: none;
   color: var(--theme-fg);
-  padding: 2rem;
+  padding: 0;
   transition: all 0.3s ease;
 }
 
 .visitor-card:hover {
-  box-shadow: 8px 8px 0 var(--theme-fg);
-  transform: translate(-4px, -4px);
+  box-shadow: none;
+  transform: none;
 }
 
 .visitor-button {
   background-color: var(--theme-fg);
   color: var(--theme-bg);
-  border: 2px solid var(--theme-fg);
-  padding: 0.875rem 2rem;
+  border: none;
+  padding: 0.5rem 1.25rem;
   font-weight: 600;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .visitor-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 var(--theme-fg);
+  transform: none;
+  box-shadow: none;
+  opacity: 0.8;
 }
 
 .visitor-input {
   background-color: var(--theme-bg);
   color: var(--theme-fg);
-  border: 2px solid var(--theme-fg);
-  padding: 0.875rem 1rem;
+  border: none;
+  padding: 0.5rem 0.75rem;
   font-family: var(--theme-font);
   transition: all 0.2s ease;
 }
 
 .visitor-input:focus {
   outline: none;
-  box-shadow: 4px 4px 0 var(--theme-fg);
-  transform: translate(-2px, -2px);
+  box-shadow: none;
+  transform: none;
 }
 
 /* Selection */

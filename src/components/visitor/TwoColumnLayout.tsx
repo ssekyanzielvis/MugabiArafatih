@@ -68,7 +68,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start max-w-7xl mx-auto">
             {/* Left Column - Media */}
             <div className="space-y-8 order-2 lg:order-1">
                 {mediaContent && mediaContent.length > 0 ? (
@@ -79,7 +79,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
                             {media.media_type === 'image' ? (
-                                <div className="relative h-[300px] md:h-[400px] lg:h-[450px] border-2" style={{ borderColor: 'var(--theme-fg)' }}>
+                                <div className="relative h-[250px] md:h-[350px] lg:h-[400px]">
                                     <Image
                                         src={media.media_url || '/placeholder.jpg'}
                                         alt={media.caption || `${section} image`}
@@ -90,7 +90,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                     />
                                 </div>
                             ) : (
-                                <div className="relative pt-[56.25%] border-2" style={{ borderColor: 'var(--theme-fg)' }}>
+                                <div className="relative pt-[56.25%]">
                                     <video
                                         src={media.media_url}
                                         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -101,7 +101,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                 </div>
                             )}
                             {media.caption && (
-                                <p className="mt-4 text-sm font-medium opacity-70 italic text-center" style={{ color: 'var(--theme-fg)' }}>
+                                <p className="mt-3 text-xs font-medium opacity-70 italic text-center" style={{ color: 'var(--theme-fg)' }}>
                                     {media.caption}
                                 </p>
                             )}
@@ -109,47 +109,41 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                     ))
                 ) : (
                     <div 
-                        className="relative h-[300px] md:h-[400px] border-2 flex items-center justify-center"
-                        style={{ borderColor: 'var(--theme-fg)' }}
+                        className="relative h-[250px] md:h-[350px] flex items-center justify-center"
                     >
-                        <p className="text-base font-medium opacity-50" style={{ color: 'var(--theme-fg)' }}>No media available</p>
+                        <p className="text-sm font-medium opacity-50" style={{ color: 'var(--theme-fg)' }}>No media available</p>
                     </div>
                 )}
             </div>
 
             {/* Right Column - Text Content */}
-            <div className="space-y-6 md:space-y-8 lg:space-y-12 order-1 lg:order-2">
+            <div className="space-y-6 md:space-y-8 lg:space-y-10 order-1 lg:order-2">
                 {section === 'home' && textData ? (
                     /* Home Section - Special Layout */
-                    <div className="space-y-8 md:space-y-12 animate-fadeIn">
+                    <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {/* Welcome Message */}
                         {textData.welcome_message && (
-                            <div className="space-y-4">
-                                <p className="text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>
+                            <div className="space-y-3">
+                                <p className="text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.welcome_message}
                                 </p>
-                                <div 
-                                    className="w-20 md:w-24 h-1"
-                                    style={{ backgroundColor: 'var(--theme-fg)' }}
-                                />
                             </div>
                         )}
 
                         {/* Full Name and Short Name */}
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                             {textData.short_name && (
                                 <div 
-                                    className="w-20 h-20 md:w-24 md:h-24 border-4 flex items-center justify-center"
-                                    style={{ borderColor: 'var(--theme-fg)' }}
+                                    className="w-16 h-16 md:w-20 md:h-20 flex items-center justify-center"
                                 >
-                                    <span className="text-3xl md:text-4xl font-bold" style={{ color: 'var(--theme-fg)' }}>
+                                    <span className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--theme-fg)' }}>
                                         {textData.short_name}
                                     </span>
                                 </div>
                             )}
 
                             {textData.full_name && (
-                                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight leading-tight" style={{ color: 'var(--theme-fg)' }}>
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight leading-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.full_name}
                                 </h1>
                             )}
@@ -157,58 +151,50 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
 
                         {/* Professional Description */}
                         {textData.description && (
-                            <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
+                            <p className="text-sm md:text-base lg:text-lg leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
                                 {textData.description}
                             </p>
                         )}
                     </div>
                 ) : section === 'kinsmen' && textData ? (
                     /* Kinsmen Section */
-                    <div className="space-y-8 md:space-y-12 animate-fadeIn">
+                    <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {textData.definition && (
-                            <div className="space-y-4">
-                                <h2 className="text-xl md:text-2xl font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>Definition</h2>
-                                <p className="text-lg md:text-xl leading-relaxed opacity-90 italic" style={{ color: 'var(--theme-fg)' }}>
+                            <div className="space-y-3">
+                                <h2 className="text-base md:text-lg font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>Definition</h2>
+                                <p className="text-sm md:text-base leading-relaxed opacity-90 italic" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.definition}
                                 </p>
                             </div>
                         )}
 
                         {textData.title && (
-                            <div className="space-y-4">
-                                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
+                            <div className="space-y-3">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.title}
                                 </h1>
-                                <div 
-                                    className="w-24 h-1"
-                                    style={{ backgroundColor: 'var(--theme-fg)' }}
-                                />
                             </div>
                         )}
 
                         {textData.description && (
-                            <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
+                            <p className="text-sm md:text-base lg:text-lg leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
                                 {textData.description}
                             </p>
                         )}
                     </div>
                 ) : section === 'collaborate' && textData ? (
                     /* Collaborate Section */
-                    <div className="space-y-8 md:space-y-12 animate-fadeIn">
+                    <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {textData.title && (
-                            <div className="space-y-4">
-                                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
+                            <div className="space-y-3">
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.title}
                                 </h1>
-                                <div 
-                                    className="w-24 h-1"
-                                    style={{ backgroundColor: 'var(--theme-fg)' }}
-                                />
                             </div>
                         )}
 
                         {textData.description && (
-                            <p className="text-lg md:text-xl lg:text-2xl leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
+                            <p className="text-sm md:text-base lg:text-lg leading-relaxed font-medium opacity-90" style={{ color: 'var(--theme-fg)' }}>
                                 {textData.description}
                             </p>
                         )}
