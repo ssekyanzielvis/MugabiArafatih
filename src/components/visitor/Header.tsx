@@ -92,12 +92,11 @@ export default function Header() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden p-2 border-2 transition-all hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                        className="md:hidden p-2 transition-all hover:scale-110 focus:outline-none"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         aria-label="Toggle menu"
                         aria-expanded={isMobileMenuOpen}
                         style={{ 
-                            borderColor: 'var(--theme-fg)',
                             color: 'var(--theme-fg)' 
                         }}
                     >
@@ -108,23 +107,21 @@ export default function Header() {
                 {/* Mobile Navigation */}
                 {isMobileMenuOpen && (
                     <div 
-                        className="md:hidden mt-6 pt-6 pb-4 border-t-2 animate-fadeIn"
-                        style={{ borderColor: 'var(--theme-fg)' }}
+                        className="md:hidden mt-6 pt-6 pb-4 animate-fadeIn"
                     >
                         <div className="flex flex-col gap-3">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.path}
                                     href={item.path}
-                                    className={`px-6 py-4 transition-all duration-200 font-semibold border-2 text-center ${
+                                    className={`px-6 py-4 transition-all duration-200 font-semibold text-center ${
                                         pathname === item.path
                                             ? 'visitor-button'
-                                            : ''
+                                            : 'hover:opacity-80'
                                     }`}
                                     style={{
                                         backgroundColor: pathname === item.path ? 'var(--theme-fg)' : 'transparent',
                                         color: pathname === item.path ? 'var(--theme-bg)' : 'var(--theme-fg)',
-                                        borderColor: 'var(--theme-fg)',
                                     }}
                                 >
                                     {item.name}

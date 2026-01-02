@@ -288,7 +288,7 @@ body {
 .visitor-input {
   background-color: var(--theme-bg);
   color: var(--theme-fg);
-  border: none;
+  border: 1px solid var(--theme-fg);
   padding: 0.5rem 0.75rem;
   font-family: var(--theme-font);
   transition: all 0.2s ease;
@@ -298,6 +298,7 @@ body {
   outline: none;
   box-shadow: none;
   transform: none;
+  border-color: var(--theme-fg);
 }
 
 /* Selection */

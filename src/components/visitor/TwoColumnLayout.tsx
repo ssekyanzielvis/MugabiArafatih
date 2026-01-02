@@ -100,11 +100,6 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                     />
                                 </div>
                             )}
-                            {media.caption && (
-                                <p className="mt-3 text-xs font-medium opacity-70 italic text-center" style={{ color: 'var(--theme-fg)' }}>
-                                    {media.caption}
-                                </p>
-                            )}
                         </div>
                     ))
                 ) : (
@@ -124,7 +119,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                         {/* Welcome Message */}
                         {textData.welcome_message && (
                             <div className="space-y-3">
-                                <p className="text-lg md:text-xl lg:text-2xl font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>
+                                <p className="text-lg md:text-xl lg:text-2xl font-bold tracking-wide" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.welcome_message}
                                 </p>
                             </div>
@@ -143,7 +138,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                             )}
 
                             {textData.full_name && (
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight leading-tight" style={{ color: 'var(--theme-fg)' }}>
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.full_name}
                                 </h1>
                             )}
@@ -160,17 +155,14 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                     /* Kinsmen Section */
                     <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {textData.definition && (
-                            <div className="space-y-3">
-                                <h2 className="text-base md:text-lg font-bold uppercase tracking-wide" style={{ color: 'var(--theme-fg)' }}>Definition</h2>
-                                <p className="text-sm md:text-base leading-relaxed opacity-90 italic" style={{ color: 'var(--theme-fg)' }}>
-                                    {textData.definition}
-                                </p>
-                            </div>
+                            <p className="text-sm md:text-base leading-relaxed opacity-90 italic" style={{ color: 'var(--theme-fg)' }}>
+                                {textData.definition}
+                            </p>
                         )}
 
                         {textData.title && (
                             <div className="space-y-3">
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.title}
                                 </h1>
                             </div>
@@ -187,7 +179,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                     <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {textData.title && (
                             <div className="space-y-3">
-                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase tracking-tight" style={{ color: 'var(--theme-fg)' }}>
+                                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight" style={{ color: 'var(--theme-fg)' }}>
                                     {textData.title}
                                 </h1>
                             </div>

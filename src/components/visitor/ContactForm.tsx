@@ -43,7 +43,8 @@ export default function ContactForm() {
 
     return (
         <div 
-            className="max-w-4xl"
+            className="max-w-2xl mx-auto p-6 md:p-8"
+            style={{ border: '2px solid var(--theme-fg)' }}
             role="form"
             aria-label="Contact form"
         >
@@ -53,9 +54,9 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="full_name" 
-                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 tracking-wide"
                     >
-                        Full Name <span className="text-red-500">*</span>
+                        Full name <span className="text-red-500">*</span>
                     </label>
                     <input
                         {...register('full_name')}
@@ -83,9 +84,9 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="email" 
-                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 tracking-wide"
                     >
-                        Email Address <span className="text-red-500">*</span>
+                        Email address <span className="text-red-500">*</span>
                     </label>
                     <input
                         {...register('email')}
@@ -113,9 +114,9 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="whatsapp_number" 
-                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 tracking-wide"
                     >
-                        WhatsApp Number
+                        WhatsApp number
                     </label>
                     <input
                         {...register('whatsapp_number')}
@@ -142,7 +143,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="message" 
-                        className="block text-xs font-semibold mb-2 uppercase tracking-wide"
+                        className="block text-xs font-semibold mb-2 tracking-wide"
                     >
                         Message
                     </label>
@@ -169,7 +170,7 @@ export default function ContactForm() {
                     ) : (
                         <>
                             <Send size={18} />
-                            <span>Send Message</span>
+                            <span>Send message</span>
                         </>
                     )}
                 </button>

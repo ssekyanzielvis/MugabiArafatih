@@ -6,14 +6,10 @@ export default function CollaboratePage() {
     return (
         <div className="space-y-16 md:space-y-24">
             {/* Header Section */}
-            <div className="text-center space-y-6 animate-fadeIn">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold uppercase tracking-tight">
-                    Let's Collaborate
+            <div className="text-center space-y-6 animate-fadeIn max-w-4xl mx-auto">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+                    Let's collaborate
                 </h1>
-                <div 
-                    className="w-24 md:w-32 h-1 mx-auto"
-                    style={{ backgroundColor: 'var(--theme-fg)' }}
-                />
                 <p className="text-lg md:text-xl max-w-2xl mx-auto font-medium opacity-80">
                     Ready to bring your ideas to life? Let's work together to create something amazing.
                 </p>
@@ -25,9 +21,9 @@ export default function CollaboratePage() {
             </div>
 
             {/* Contact Channels - Full Width */}
-            <div className="animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+            <div className="animate-fadeIn max-w-4xl mx-auto" style={{ animationDelay: '0.4s' }}>
                 <div className="mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-6">Contact Channels</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">Contact channels</h2>
                     <SocialLinks />
                 </div>
             </div>
@@ -35,7 +31,7 @@ export default function CollaboratePage() {
             {/* Contact Form - Full Width */}
             <div className="animate-fadeIn" style={{ animationDelay: '0.6s' }}>
                 <div className="mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold uppercase tracking-tight mb-6">Send a Message</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6 text-center">Send a message</h2>
                     <ContactForm />
                 </div>
             </div>
