@@ -47,10 +47,11 @@ export default function Header() {
             className="sticky top-0 z-50 transition-all duration-300"
             style={{
                 backgroundColor: 'var(--theme-bg)',
+                height: '2.5cm'
             }}
         >
-            <nav className="py-4" style={{ marginLeft: '96px', marginRight: '96px' }}>
-                <div className="flex items-center justify-between">
+            <nav className="h-full flex items-center" style={{ marginLeft: '96px', marginRight: '96px' }}>
+                <div className="flex items-center justify-between w-full">
                     {/* Logo */}
                     <Link 
                         href="/" 
