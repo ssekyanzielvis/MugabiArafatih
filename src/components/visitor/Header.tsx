@@ -49,7 +49,7 @@ export default function Header() {
                 backgroundColor: 'var(--theme-bg)',
             }}
         >
-            <nav className="h-16 md:h-20 lg:h-[2.5cm] flex items-center px-4 sm:px-8 md:px-16 lg:px-24">
+            <nav className="h-16 md:h-20 lg:h-[2.5cm] flex items-center px-4 sm:px-8 md:px-12 lg:px-[2cm]">
                 <div className="flex items-center justify-between w-full">
                     {/* Logo */}
                     <Link 
