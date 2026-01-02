@@ -62,8 +62,8 @@ export default function Header() {
                             <Image
                                 src="/logo.png"
                                 alt="Portfolio Logo"
-                                width={56}
-                                height={56}
+                                width={112}
+                                height={112}
                                 className="object-contain"
                                 priority
                             />
@@ -71,12 +71,12 @@ export default function Header() {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-2">
+                    <div className="hidden md:flex items-center gap-4">
                         {navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`px-4 py-2 text-xs transition-all duration-200 font-semibold focus:outline-none ${
+                                className={`px-8 py-4 text-base transition-all duration-200 font-semibold focus:outline-none ${
                                     pathname === item.path
                                         ? 'visitor-button'
                                         : 'hover:opacity-80'
@@ -93,7 +93,7 @@ export default function Header() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden p-2 transition-all hover:scale-110 focus:outline-none"
+                        className="md:hidden p-4 transition-all hover:scale-110 focus:outline-none"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         aria-label="Toggle menu"
                         aria-expanded={isMobileMenuOpen}
@@ -101,7 +101,7 @@ export default function Header() {
                             color: 'var(--theme-fg)' 
                         }}
                     >
-                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isMobileMenuOpen ? <X size={48} /> : <Menu size={48} />}
                     </button>
                 </div>
 
@@ -110,12 +110,12 @@ export default function Header() {
                     <div 
                         className="md:hidden mt-6 pt-6 pb-4 animate-fadeIn"
                     >
-                        <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-6">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.path}
                                     href={item.path}
-                                    className={`px-6 py-4 transition-all duration-200 font-semibold text-center ${
+                                    className={`px-12 py-8 text-base transition-all duration-200 font-semibold text-center ${
                                         pathname === item.path
                                             ? 'visitor-button'
                                             : 'hover:opacity-80'
