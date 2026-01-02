@@ -17,10 +17,13 @@ export default function VisitorLayout({
         <div className="visitor-theme min-h-screen antialiased">
             <AnalyticsTracker />
             <Header />
-            <main className="py-4 md:py-8 pb-8 md:pb-12" style={{ marginLeft: '1rem', marginRight: '1rem', paddingLeft: '0', paddingRight: '0' }}>
-                <div className="sm:mx-4 md:mx-8 lg:mx-[2cm]">
-                    {children}
-                </div>
+            <main style={{ 
+                marginLeft: '2cm', 
+                marginRight: '2cm',
+                paddingTop: '1rem',
+                paddingBottom: '3rem'
+            }}>
+                {children}
             </main>
         </div>
     )
