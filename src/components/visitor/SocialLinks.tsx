@@ -31,7 +31,7 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="flex justify-center items-center gap-6 my-8">
+        <div className="flex justify-start items-center gap-8 my-12">
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.platform] || Mail
                     const isEmail = link.platform === 'email'
