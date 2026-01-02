@@ -49,6 +49,20 @@ CREATE POLICY "Daily visits are viewable by everyone"
     TO anon, authenticated
     USING (true);
 
+-- Allow trigger to insert/update daily_visits (needed for analytics aggregation)
+DROP POLICY IF EXISTS "Daily visits can be inserted by trigger" ON public.daily_visits;
+CREATE POLICY "Daily visits can be inserted by trigger"
+    ON public.daily_visits FOR INSERT
+    TO anon, authenticated
+    WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Daily visits can be updated by trigger" ON public.daily_visits;
+CREATE POLICY "Daily visits can be updated by trigger"
+    ON public.daily_visits FOR UPDATE
+    TO anon, authenticated
+    USING (true)
+    WITH CHECK (true);
+
 -- Fix Appearance Settings policies
 DROP POLICY IF EXISTS "Settings can be managed by admins" ON public.appearance_settings;
 CREATE POLICY "Settings can be managed by admins"
