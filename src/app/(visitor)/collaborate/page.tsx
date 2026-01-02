@@ -4,7 +4,7 @@ import SocialLinks from '@/components/visitor/SocialLinks'
 
 export default function CollaboratePage() {
     return (
-        <div className="space-y-16 md:space-y-24">
+        <div className="space-y-16 md:space-y-24 ml-4 sm:ml-8 lg:ml-12">
             {/* Header Section */}
             <div className="text-center space-y-6 animate-fadeIn max-w-4xl mx-auto">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight">
