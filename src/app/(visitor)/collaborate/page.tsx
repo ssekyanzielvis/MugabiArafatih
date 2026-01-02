@@ -21,12 +21,12 @@ export default function CollaboratePage() {
             </div>
 
             {/* Contact Channels - Full Width */}
-            <div className="animate-fadeIn my-12" style={{ animationDelay: '0.4s' }}>
+            <div className="animate-fadeIn" style={{ animationDelay: '0.4s', marginTop: '1.5cm', marginBottom: '1.5cm' }}>
                 <SocialLinks />
             </div>
 
             {/* Contact Form - Full Width */}
-            <div className="animate-fadeIn my-12" style={{ animationDelay: '0.6s' }}>
+            <div className="animate-fadeIn" style={{ animationDelay: '0.6s', marginTop: '1.5cm' }}>
                 <ContactForm />
             </div>
         </div>
