@@ -22,10 +22,7 @@ export default function CollaboratePage() {
 
             {/* Contact Channels - Full Width */}
             <div className="animate-fadeIn max-w-4xl mx-auto" style={{ animationDelay: '0.4s' }}>
-                <div className="mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6">Contact channels</h2>
-                    <SocialLinks />
-                </div>
+                <SocialLinks />
             </div>
 
             {/* Contact Form - Full Width */}
