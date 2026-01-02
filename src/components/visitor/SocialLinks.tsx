@@ -31,7 +31,7 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex justify-center items-center gap-6 my-8">
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.platform] || Mail
                     const isEmail = link.platform === 'email'
@@ -44,25 +44,15 @@ export default async function SocialLinks() {
                             href={href}
                             target={isEmail ? undefined : '_blank'}
                             rel={isEmail ? undefined : 'noopener noreferrer'}
-                            className="flex items-center gap-3 p-4 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
+                            className="p-3 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
                             style={{ borderColor: 'var(--theme-fg)' }}
                             aria-label={`${label}: ${link.url}`}
                         >
                             <div 
-                                className="w-12 h-12 border-2 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200"
-                                style={{ borderColor: 'var(--theme-fg)' }}
+                                className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
                             >
-                                {typeof Icon === 'function' ? <Icon /> : <Icon size={22} aria-hidden="true" />}
+                                {typeof Icon === 'function' ? <Icon /> : <Icon size={24} aria-hidden="true" />}
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="font-bold text-sm uppercase tracking-wide mb-1">
-                                    {label}
-                                </p>
-                                <p className="text-sm truncate opacity-70">{link.url}</p>
-                            </div>
-                            {!isEmail && (
-                                <ExternalLink size={18} className="flex-shrink-0 opacity-50" aria-hidden="true" />
-                            )}
                         </a>
                     )
                 })}
