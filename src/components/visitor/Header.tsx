@@ -47,10 +47,9 @@ export default function Header() {
             className="sticky top-0 z-50 transition-all duration-300"
             style={{
                 backgroundColor: 'var(--theme-bg)',
-                height: '2.5cm'
             }}
         >
-            <nav className="h-full flex items-center" style={{ marginLeft: '96px', marginRight: '96px' }}>
+            <nav className="h-16 md:h-20 lg:h-[2.5cm] flex items-center px-4 sm:px-8 md:px-16 lg:px-24">
                 <div className="flex items-center justify-between w-full">
                     {/* Logo */}
                     <Link 
@@ -62,21 +61,21 @@ export default function Header() {
                             <Image
                                 src="/logo.png"
                                 alt="Portfolio Logo"
-                                width={112}
-                                height={112}
-                                className="object-contain"
+                                width={56}
+                                height={56}
+                                className="object-contain w-14 h-14 md:w-20 md:h-20 lg:w-28 lg:h-28"
                                 priority
                             />
                         </div>
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-4">
+                    <div className="hidden md:flex items-center gap-2 lg:gap-4">
                         {navItems.map((item) => (
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                className={`px-8 py-4 text-base transition-all duration-200 font-semibold focus:outline-none ${
+                                className={`px-3 py-2 lg:px-8 lg:py-4 text-xs lg:text-base transition-all duration-200 font-semibold focus:outline-none ${
                                     pathname === item.path
                                         ? 'visitor-button'
                                         : 'hover:opacity-80'
@@ -93,7 +92,7 @@ export default function Header() {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="md:hidden p-4 transition-all hover:scale-110 focus:outline-none"
+                        className="md:hidden p-2 transition-all hover:scale-110 focus:outline-none"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         aria-label="Toggle menu"
                         aria-expanded={isMobileMenuOpen}
@@ -101,21 +100,21 @@ export default function Header() {
                             color: 'var(--theme-fg)' 
                         }}
                     >
-                        {isMobileMenuOpen ? <X size={48} /> : <Menu size={48} />}
+                        {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
 
                 {/* Mobile Navigation */}
                 {isMobileMenuOpen && (
                     <div 
-                        className="md:hidden mt-6 pt-6 pb-4 animate-fadeIn"
+                        className="md:hidden mt-4 pt-4 pb-4 animate-fadeIn"
                     >
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-3">
                             {navItems.map((item) => (
                                 <Link
                                     key={item.path}
                                     href={item.path}
-                                    className={`px-12 py-8 text-base transition-all duration-200 font-semibold text-center ${
+                                    className={`px-4 py-3 text-sm transition-all duration-200 font-semibold text-center ${
                                         pathname === item.path
                                             ? 'visitor-button'
                                             : 'hover:opacity-80'

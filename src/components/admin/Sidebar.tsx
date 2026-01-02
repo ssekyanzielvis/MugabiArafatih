@@ -35,6 +35,7 @@ export default function AdminSidebar() {
     const pathname = usePathname()
     const router = useRouter()
     const [isCollapsed, setIsCollapsed] = useState(false)
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const { theme, toggleTheme } = useAdminTheme()
 
     const handleLogout = async () => {
@@ -50,10 +51,23 @@ export default function AdminSidebar() {
     }
 
     return (
+        <>
+        {/* Mobile Menu Button */}
+        <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden fixed top-4 left-4 z-50 p-2 border-2 admin-button"
+            style={{ borderColor: 'var(--admin-border)' }}
+            aria-label="Toggle menu"
+        >
+            {isMobileMenuOpen ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+        </button>
+        
         <aside 
             className={`admin-panel border-r-2 transition-all duration-300 ${
                 isCollapsed ? 'w-20' : 'w-64'
-            } flex flex-col relative`}
+            } flex flex-col relative
+            ${isMobileMenuOpen ? 'fixed inset-y-0 left-0 z-40' : 'hidden md:flex'}
+            `}
             style={{ borderColor: 'var(--admin-border)' }}
         >
             {/* Header */}
@@ -135,5 +149,6 @@ export default function AdminSidebar() {
                 </button>
             </div>
         </aside>
+        </>
     )
 }

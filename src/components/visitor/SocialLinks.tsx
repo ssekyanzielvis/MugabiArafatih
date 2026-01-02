@@ -31,7 +31,7 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="flex justify-start items-center" style={{ gap: '1.5cm', marginTop: '1.5cm', marginBottom: '1.5cm' }}>
+        <div className="flex flex-wrap justify-start items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm]">
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.platform] || Mail
                     const isEmail = link.platform === 'email'
@@ -44,14 +44,14 @@ export default async function SocialLinks() {
                             href={href}
                             target={isEmail ? undefined : '_blank'}
                             rel={isEmail ? undefined : 'noopener noreferrer'}
-                            className="p-6 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
+                            className="p-2 md:p-4 lg:p-6 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
                             style={{ borderColor: 'var(--theme-fg)' }}
                             aria-label={`${label}: ${link.url}`}
                         >
                             <div 
-                                className="w-16 h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
+                                className="w-8 h-8 md:w-12 md:h-12 lg:w-16 lg:h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
                             >
-                                {typeof Icon === 'function' ? <Icon /> : <Icon size={48} aria-hidden="true" />}
+                                {typeof Icon === 'function' ? <Icon /> : <Icon size={24} className="md:w-9 md:h-9 lg:w-12 lg:h-12" aria-hidden="true" />}
                             </div>
                         </a>
                     )
