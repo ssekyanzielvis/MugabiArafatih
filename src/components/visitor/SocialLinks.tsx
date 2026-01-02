@@ -44,14 +44,14 @@ export default async function SocialLinks() {
                             href={href}
                             target={isEmail ? undefined : '_blank'}
                             rel={isEmail ? undefined : 'noopener noreferrer'}
-                            className="p-3 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
+                            className="p-6 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
                             style={{ borderColor: 'var(--theme-fg)' }}
                             aria-label={`${label}: ${link.url}`}
                         >
                             <div 
-                                className="w-8 h-8 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
+                                className="w-16 h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
                             >
-                                {typeof Icon === 'function' ? <Icon /> : <Icon size={24} aria-hidden="true" />}
+                                {typeof Icon === 'function' ? <Icon /> : <Icon size={48} aria-hidden="true" />}
                             </div>
                         </a>
                     )
