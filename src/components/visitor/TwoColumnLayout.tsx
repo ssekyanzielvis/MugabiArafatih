@@ -68,7 +68,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start">
             {/* Left Column - Media */}
             <div className="space-y-8 order-2 lg:order-1">
                 {mediaContent && mediaContent.length > 0 ? (
