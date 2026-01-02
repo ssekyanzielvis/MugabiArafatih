@@ -17,24 +17,26 @@ export default async function SocialLinks() {
     const supabase = await createClient()
 
     const { data: socialLinks } = await supabase
-        .from('website_content')
+        .from('social_links')
         .select('*')
-        .eq('section', 'collaborate')
-        .eq('content_type', 'social')
         .eq('is_active', true)
         .order('position', { ascending: true })
 
     if (!socialLinks || socialLinks.length === 0) {
-        return null
+        return (
+            <div className="text-center p-8 border-2 border-dashed opacity-50">
+                <p className="text-sm font-medium">No social links available</p>
+            </div>
+        )
     }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {socialLinks.map((link) => {
-                    const Icon = iconMap[link.key] || Mail
-                    const isEmail = link.key === 'email'
-                    const href = isEmail ? `mailto:${link.value}` : link.value || '#'
-                    const label = link.key.charAt(0).toUpperCase() + link.key.slice(1)
+                    const Icon = iconMap[link.platform] || Mail
+                    const isEmail = link.platform === 'email'
+                    const href = isEmail ? `mailto:${link.url}` : link.url || '#'
+                    const label = link.platform.charAt(0).toUpperCase() + link.platform.slice(1)
 
                     return (
                         <a
@@ -44,7 +46,7 @@ export default async function SocialLinks() {
                             rel={isEmail ? undefined : 'noopener noreferrer'}
                             className="flex items-center gap-3 p-4 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
                             style={{ borderColor: 'var(--theme-fg)' }}
-                            aria-label={`${label}: ${link.value}`}
+                            aria-label={`${label}: ${link.url}`}
                         >
                             <div 
                                 className="w-12 h-12 border-2 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200"
@@ -56,7 +58,7 @@ export default async function SocialLinks() {
                                 <p className="font-bold text-sm uppercase tracking-wide mb-1">
                                     {label}
                                 </p>
-                                <p className="text-sm truncate opacity-70">{link.value}</p>
+                                <p className="text-sm truncate opacity-70">{link.url}</p>
                             </div>
                             {!isEmail && (
                                 <ExternalLink size={18} className="flex-shrink-0 opacity-50" aria-hidden="true" />

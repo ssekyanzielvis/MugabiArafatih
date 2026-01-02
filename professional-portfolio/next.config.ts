@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Speed optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  // Experimental features for faster builds
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'recharts', 'date-fns'],
+  },
 };
 
 export default nextConfig;
