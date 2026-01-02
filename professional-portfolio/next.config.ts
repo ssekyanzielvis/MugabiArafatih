@@ -15,6 +15,9 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // Build cache configuration
+  cacheMaxMemorySize: 0, // Disable in-memory caching, rely on disk cache
+  cacheHandler: undefined,
   // Experimental features for faster builds
   experimental: {
     optimizePackageImports: ['lucide-react', 'recharts', 'date-fns'],

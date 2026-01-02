@@ -7,6 +7,12 @@
   "regions": ["iad1"],
   "cleanUrls": true,
   "trailingSlash": false,
+  "crons": [],
+  "build": {
+    "env": {
+      "NEXT_PRIVATE_STANDALONE": "true"
+    }
+  },
   "rewrites": [
     {
       "source": "/admin/:path*",

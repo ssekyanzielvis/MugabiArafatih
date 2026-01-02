@@ -6,6 +6,16 @@ services:
     region: oregon
     buildCommand: npm install && npm run build
     startCommand: npm start
+    buildFilter:
+      paths:
+        - src/**
+        - public/**
+        - package.json
+        - next.config.ts
+        - tsconfig.json
+      ignoredPaths:
+        - README.md
+        - "*.md"
     envVars:
       - key: NODE_VERSION
         value: 20.11.0
