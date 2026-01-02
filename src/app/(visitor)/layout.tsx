@@ -17,7 +17,7 @@ export default function VisitorLayout({
         <div className="visitor-theme min-h-screen antialiased">
             <AnalyticsTracker />
             <Header />
-            <main className="w-full mx-auto px-6 sm:px-8 lg:px-12 py-6 md:py-8 pb-12 max-w-6xl">
+            <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 pb-12 max-w-7xl">
                 {children}
             </main>
         </div>
