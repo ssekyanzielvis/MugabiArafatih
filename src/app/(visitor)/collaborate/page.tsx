@@ -30,10 +30,7 @@ export default function CollaboratePage() {
 
             {/* Contact Form - Full Width */}
             <div className="animate-fadeIn" style={{ animationDelay: '0.6s' }}>
-                <div className="mb-8">
-                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-6 text-center">Send a message</h2>
-                    <ContactForm />
-                </div>
+                <ContactForm />
             </div>
         </div>
     )
