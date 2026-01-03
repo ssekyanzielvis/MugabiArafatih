@@ -155,7 +155,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                     /* Kinsmen Section */
                     <div className="space-y-6 md:space-y-8 animate-fadeIn">
                         {textData.definition && (
-                            <p className="text-sm md:text-base leading-relaxed opacity-90 italic" style={{ color: 'var(--theme-fg)' }}>
+                            <p className="text-sm md:text-base leading-relaxed opacity-90 font-medium" style={{ color: 'var(--theme-fg)' }}>
                                 {textData.definition}
                             </p>
                         )}
