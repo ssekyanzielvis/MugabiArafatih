@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import ContactForm from '@/components/visitor/ContactForm'
+import SocialLinks from '@/components/visitor/SocialLinks'
 
 interface TwoColumnLayoutProps {
     section: 'home' | 'kinsmen' | 'collaborate'
@@ -110,6 +111,13 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                         <p className="text-sm font-medium opacity-50" style={{ color: 'var(--theme-fg)' }}>No media available</p>
                     </div>
                 )}
+                
+                {/* Social Links - Only for collaborate section */}
+                {section === 'collaborate' && (
+                    <div style={{ marginTop: '1cm' }}>
+                        <SocialLinks />
+                    </div>
+                )}
             </div>
 
             {/* Right Column - Text Content */}
@@ -193,7 +201,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                         )}
                         
                         {/* Contact Form directly after text */}
-                        <div className="mt-4">
+                        <div style={{ marginTop: '1cm' }}>
                             <ContactForm />
                         </div>
                     </div>
