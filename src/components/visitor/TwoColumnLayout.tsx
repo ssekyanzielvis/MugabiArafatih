@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import ContactForm from '@/components/visitor/ContactForm'
 import SocialLinks from '@/components/visitor/SocialLinks'
+import SectionWrapper from '@/components/visitor/SectionWrapper'
 
 interface TwoColumnLayoutProps {
     section: 'home' | 'kinsmen' | 'collaborate'
@@ -70,7 +71,8 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
     }
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start">
+        <SectionWrapper section={section}>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start">
             {/* Left Column - Media */}
             <div className="space-y-8 order-2 lg:order-1">
                 {mediaContent && mediaContent.length > 0 ? (
@@ -212,5 +214,6 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                 )}
             </div>
         </div>
+        </SectionWrapper>
     )
 }

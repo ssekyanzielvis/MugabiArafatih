@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
 
 const navItems = [
     { name: 'Home', path: '/' },
@@ -14,6 +15,7 @@ const navItems = [
 
 export default function Header() {
     const pathname = usePathname()
+    const { getSectionStyle } = useTheme()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
 
@@ -46,7 +48,7 @@ export default function Header() {
         <header 
             className="sticky top-0 z-50 transition-all duration-300"
             style={{
-                backgroundColor: 'var(--theme-bg)',
+                ...getSectionStyle('header'),
             }}
         >
             <nav className="h-16 md:h-20 lg:h-[2.5cm] flex items-center" style={{ paddingLeft: '2cm', paddingRight: '2cm' }}>

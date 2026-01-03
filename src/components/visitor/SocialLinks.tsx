@@ -1,5 +1,15 @@
-import { createClient } from '@/lib/supabase/server'
-import { Mail, Facebook, Twitter, Youtube, ExternalLink } from 'lucide-react'
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Mail, Facebook, Twitter, Youtube } from 'lucide-react'
+import SectionWrapper from '@/components/visitor/SectionWrapper'
+
+interface SocialLink {
+    id: string
+    platform: string
+    url: string
+    position: number
+}
 
 const iconMap: Record<string, any> = {
     email: Mail,
@@ -13,14 +23,30 @@ const iconMap: Record<string, any> = {
     ),
 }
 
-export default async function SocialLinks() {
-    const supabase = await createClient()
+export default function SocialLinks() {
+    const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
+    const [loading, setLoading] = useState(true)
 
-    const { data: socialLinks } = await supabase
-        .from('social_links')
-        .select('*')
-        .eq('is_active', true)
-        .order('position', { ascending: true })
+    useEffect(() => {
+        async function fetchSocialLinks() {
+            try {
+                const response = await fetch('/api/social-links')
+                if (response.ok) {
+                    const data = await response.json()
+                    setSocialLinks(data)
+                }
+            } catch (error) {
+                console.error('Error fetching social links:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchSocialLinks()
+    }, [])
+
+    if (loading) {
+        return <div className="text-center p-8"><p className="text-sm opacity-50">Loading...</p></div>
+    }
 
     if (!socialLinks || socialLinks.length === 0) {
         return (
@@ -31,7 +57,8 @@ export default async function SocialLinks() {
     }
 
     return (
-        <div className="flex flex-wrap justify-start items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm]">
+        <SectionWrapper section="social_links">
+            <div className="flex flex-wrap justify-start items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm]">
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.platform] || Mail
                     const isEmail = link.platform === 'email'
@@ -57,5 +84,4 @@ export default async function SocialLinks() {
                     )
                 })}
             </div>
-    )
-}
+        </SectionWrapper>

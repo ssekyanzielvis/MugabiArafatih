@@ -1,13 +1,32 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Palette, Type, Moon, Sun, RotateCcw, Save, Check } from 'lucide-react'
+import { Palette, Type, Moon, Sun, RotateCcw, Save, Check, Sliders } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { showToast } from '@/components/ui/toaster'
+import SectionThemeControls from '@/components/admin/SectionThemeControls'
 
 export default function SettingsPage() {
-    const { config, updateColorMode, updateFontFamily, resetTheme } = useTheme()
+    const { config, updateColorMode, updateFontFamily, resetTheme, loadSectionThemes } = useTheme()
     const [saved, setSaved] = useState(false)
+    const [sectionThemes, setSectionThemes] = useState<any[]>([])
+    const [activeTab, setActiveTab] = useState<'general' | 'sections'>('general')
+
+    useEffect(() => {
+        loadSectionThemesData()
+    }, [config.colorMode])
+
+    const loadSectionThemesData = async () => {
+        try {
+            const response = await fetch('/api/section-themes')
+            if (response.ok) {
+                const data = await response.json()
+                setSectionThemes(data)
+            }
+        } catch (error) {
+            console.error('Error loading section themes:', error)
+        }
+    }
 
     const fontOptions = [
         { value: 'sans-serif', label: 'Sans Serif (Default)', description: 'Clean and modern' },
@@ -29,8 +48,33 @@ export default function SettingsPage() {
         showToast('info', 'Settings reset to defaults')
     }
 
+    const handleSectionThemeSaved = () => {
+        loadSectionThemes()
+        loadSectionThemesData()
+    }
+
+    const getSectionTheme = (section: string) => {
+        const found = sectionThemes.find(
+            t => t.section === section && t.theme_mode === config.colorMode
+        )
+        return found ? {
+            contrast: parseFloat(found.contrast) || 1,
+            saturation: parseFloat(found.saturation) || 1,
+            brightness: parseFloat(found.brightness) || 1,
+        } : { contrast: 1, saturation: 1, brightness: 1 }
+    }
+
+    const sections = [
+        { id: 'header', label: 'Header' },
+        { id: 'home', label: 'Home Section' },
+        { id: 'kinsmen', label: 'Kinsmen Section' },
+        { id: 'collaborate', label: 'Collaborate Section' },
+        { id: 'social_links', label: 'Social Links' },
+        { id: 'footer', label: 'Footer' },
+    ]
+
     return (
-        <div className="space-y-8 max-w-5xl">
+        <div className="space-y-8 max-w-6xl">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
@@ -71,7 +115,34 @@ export default function SettingsPage() {
                 </div>
             </div>
 
-            {/* Color Mode Settings */}
+            {/* Tab Navigation */}
+            <div className="flex gap-2 border-b-2 border-inherit">
+                <button
+                    onClick={() => setActiveTab('general')}
+                    className={`px-6 py-3 font-bold transition-all ${
+                        activeTab === 'general'
+                            ? 'border-b-4 border-inherit -mb-0.5'
+                            : 'opacity-50 hover:opacity-75'
+                    }`}
+                >
+                    General Settings
+                </button>
+                <button
+                    onClick={() => setActiveTab('sections')}
+                    className={`px-6 py-3 font-bold flex items-center gap-2 transition-all ${
+                        activeTab === 'sections'
+                            ? 'border-b-4 border-inherit -mb-0.5'
+                            : 'opacity-50 hover:opacity-75'
+                    }`}
+                >
+                    <Sliders size={18} />
+                    Section Themes
+                </button>
+            </div>
+
+            {/* General Settings Tab */}
+            {activeTab === 'general' && (
+                <div className="space-y-8">{/* Color Mode Settings */}
             <div className="admin-card p-6 md:p-8">
                 <div className="flex items-center gap-4 mb-8">
                     <div className="w-12 h-12 border-2 border-inherit flex items-center justify-center">
@@ -236,6 +307,47 @@ export default function SettingsPage() {
                     </div>
                 </div>
             </div>
+        </div>
+            )}
+
+            {/* Section Themes Tab */}
+            {activeTab === 'sections' && (
+                <div className="space-y-6">
+                    <div className="admin-card p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                            <Sliders size={24} />
+                            <div>
+                                <h2 className="text-xl font-bold uppercase">Section-Specific Themes</h2>
+                                <p className="text-sm opacity-70 mt-1">
+                                    Adjust contrast, saturation, and brightness for each section independently
+                                </p>
+                            </div>
+                        </div>
+                        <div className="p-4 border-2 border-inherit bg-gray-50 dark:bg-gray-900 mt-4">
+                            <p className="text-sm">
+                                <strong>Current Theme Mode:</strong> {config.colorMode === 'dark' ? 'Dark' : 'Light'}
+                            </p>
+                            <p className="text-xs opacity-70 mt-2">
+                                Settings are saved separately for dark and light modes. 
+                                Switch the theme mode in General Settings to configure the other mode.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {sections.map(section => (
+                            <SectionThemeControls
+                                key={`${section.id}-${config.colorMode}`}
+                                section={section.id as any}
+                                sectionLabel={section.label}
+                                themeMode={config.colorMode}
+                                initialTheme={getSectionTheme(section.id)}
+                                onSave={handleSectionThemeSaved}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
