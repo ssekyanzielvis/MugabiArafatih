@@ -91,7 +91,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         const savedConfig = localStorage.getItem('theme-config')
         if (savedConfig) {
             try {
-                setConfig(JSON.parse(savedConfig))
+                const parsed = JSON.parse(savedConfig)
+                // Merge with defaults to ensure sectionThemes exists
+                setConfig({
+                    ...defaultConfig,
+                    ...parsed,
+                    sectionThemes: parsed.sectionThemes || defaultConfig.sectionThemes,
+                })
             } catch (error) {
                 console.error('Error loading theme config:', error)
             }
@@ -177,8 +183,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
 
     const getSectionStyle = (section: SectionName): React.CSSProperties => {
+        // Safety check: ensure sectionThemes exists
+        if (!config.sectionThemes) {
+            return {
+                backgroundColor: config.colorMode === 'dark' ? '#000000' : '#ffffff',
+                color: config.colorMode === 'dark' ? '#ffffff' : '#000000',
+            }
+        }
+
         const sectionTheme = config.sectionThemes[section]
-        if (!sectionTheme) return {}
+        if (!sectionTheme) {
+            return {
+                backgroundColor: config.colorMode === 'dark' ? '#000000' : '#ffffff',
+                color: config.colorMode === 'dark' ? '#ffffff' : '#000000',
+            }
+        }
 
         const bgColor = config.colorMode === 'dark' ? '#000000' : '#ffffff'
         const fgColor = config.colorMode === 'dark' ? '#ffffff' : '#000000'
