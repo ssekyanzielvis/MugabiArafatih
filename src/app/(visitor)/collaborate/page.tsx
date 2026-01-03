@@ -10,14 +10,14 @@ export default function CollaboratePage() {
                 <TwoColumnLayout section="collaborate" />
             </div>
 
-            {/* Contact Channels - Full Width */}
-            <div className="animate-fadeIn" style={{ animationDelay: '0.4s', marginTop: '1.5cm', marginBottom: '1.5cm' }}>
-                <SocialLinks />
+            {/* Contact Form - Full Width */}
+            <div className="animate-fadeIn" style={{ animationDelay: '0.4s', marginTop: '1.5cm' }}>
+                <ContactForm />
             </div>
 
-            {/* Contact Form - Full Width */}
-            <div className="animate-fadeIn" style={{ animationDelay: '0.6s', marginTop: '1.5cm' }}>
-                <ContactForm />
+            {/* Contact Channels - Full Width */}
+            <div className="animate-fadeIn" style={{ animationDelay: '0.6s', marginTop: '1.5cm', marginBottom: '1.5cm' }}>
+                <SocialLinks />
             </div>
         </div>
     )
