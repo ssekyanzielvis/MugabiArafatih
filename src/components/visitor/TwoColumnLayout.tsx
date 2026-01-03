@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
+import ContactForm from '@/components/visitor/ContactForm'
 
 interface TwoColumnLayoutProps {
     section: 'home' | 'kinsmen' | 'collaborate'
@@ -175,8 +176,8 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                         )}
                     </div>
                 ) : section === 'collaborate' && textData ? (
-                    /* Collaborate Section */
-                    <div className="space-y-6 md:space-y-8 animate-fadeIn">
+                    /* Collaborate Section with Form */
+                    <div className="space-y-4 md:space-y-6 animate-fadeIn">
                         {textData.title && (
                             <div className="space-y-3">
                                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight" style={{ color: 'var(--theme-fg)' }}>
@@ -190,6 +191,11 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                 {textData.description}
                             </p>
                         )}
+                        
+                        {/* Contact Form directly after text */}
+                        <div className="mt-4">
+                            <ContactForm />
+                        </div>
                     </div>
                 ) : (
                     <div className="space-y-4">
