@@ -53,6 +53,39 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [config, setConfig] = useState<ThemeConfig>(defaultConfig)
     const [mounted, setMounted] = useState(false)
 
+    // Define loadSectionThemes before using it
+    const loadSectionThemes = async () => {
+        try {
+            const response = await fetch('/api/section-themes')
+            if (response.ok) {
+                const data = await response.json()
+                const sectionThemes: Record<SectionName, SectionTheme> = {
+                    header: { contrast: 1, saturation: 1, brightness: 1 },
+                    home: { contrast: 1, saturation: 1, brightness: 1 },
+                    kinsmen: { contrast: 1, saturation: 1, brightness: 1 },
+                    collaborate: { contrast: 1, saturation: 1, brightness: 1 },
+                    social_links: { contrast: 1, saturation: 1, brightness: 1 },
+                    footer: { contrast: 1, saturation: 1, brightness: 1 },
+                }
+
+                // Map database results to section themes
+                data.forEach((item: any) => {
+                    if (item.theme_mode === config.colorMode && sectionThemes[item.section as SectionName]) {
+                        sectionThemes[item.section as SectionName] = {
+                            contrast: parseFloat(item.contrast) || 1,
+                            saturation: parseFloat(item.saturation) || 1,
+                            brightness: parseFloat(item.brightness) || 1,
+                        }
+                    }
+                })
+
+                setConfig(prev => ({ ...prev, sectionThemes }))
+            }
+        } catch (error) {
+            console.error('Error loading section themes:', error)
+        }
+    }
+
     useEffect(() => {
         // Load saved theme configuration from localStorage
         const savedConfig = localStorage.getItem('theme-config')
@@ -64,10 +97,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             }
         }
         setMounted(true)
-        
-        // Load section themes from database
-        loadSectionThemes()
     }, [])
+
+    // Load section themes when mounted or when color mode changes
+    useEffect(() => {
+        if (mounted) {
+            loadSectionThemes()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mounted, config.colorMode])
 
     useEffect(() => {
         if (mounted) {
@@ -149,38 +187,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             filter: `contrast(${sectionTheme.contrast}) saturate(${sectionTheme.saturation}) brightness(${sectionTheme.brightness})`,
             backgroundColor: bgColor,
             color: fgColor,
-        }
-    }
-
-    const loadSectionThemes = async () => {
-        try {
-            const response = await fetch('/api/section-themes')
-            if (response.ok) {
-                const data = await response.json()
-                const sectionThemes: Record<SectionName, SectionTheme> = {
-                    header: { contrast: 1, saturation: 1, brightness: 1 },
-                    home: { contrast: 1, saturation: 1, brightness: 1 },
-                    kinsmen: { contrast: 1, saturation: 1, brightness: 1 },
-                    collaborate: { contrast: 1, saturation: 1, brightness: 1 },
-                    social_links: { contrast: 1, saturation: 1, brightness: 1 },
-                    footer: { contrast: 1, saturation: 1, brightness: 1 },
-                }
-
-                // Map database results to section themes
-                data.forEach((item: any) => {
-                    if (item.theme_mode === config.colorMode && sectionThemes[item.section as SectionName]) {
-                        sectionThemes[item.section as SectionName] = {
-                            contrast: parseFloat(item.contrast) || 1,
-                            saturation: parseFloat(item.saturation) || 1,
-                            brightness: parseFloat(item.brightness) || 1,
-                        }
-                    }
-                })
-
-                setConfig(prev => ({ ...prev, sectionThemes }))
-            }
-        } catch (error) {
-            console.error('Error loading section themes:', error)
         }
     }
 
