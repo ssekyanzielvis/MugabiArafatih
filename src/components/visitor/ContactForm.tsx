@@ -43,13 +43,13 @@ export default function ContactForm() {
 
     return (
         <div 
-            className="max-w-2xl mx-auto p-4 md:p-6 lg:p-8"
+            className="p-3 md:p-4"
             style={{ border: '2px solid var(--theme-fg)' }}
             role="form"
             aria-label="Contact form"
         >
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 md:space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 md:space-y-4">
                 {/* Full Name */}
                 <div>
                     <label 
