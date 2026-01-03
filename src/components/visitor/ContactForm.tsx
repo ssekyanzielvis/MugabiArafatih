@@ -43,18 +43,18 @@ export default function ContactForm() {
 
     return (
         <div 
-            className="p-3 md:p-4"
+            className="p-2 md:p-3"
             style={{ border: '2px solid var(--theme-fg)' }}
             role="form"
             aria-label="Contact form"
         >
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 md:space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 md:space-y-3">
                 {/* Full Name */}
                 <div>
                     <label 
                         htmlFor="full_name" 
-                        className="block text-xs font-semibold mb-2 tracking-wide"
+                        className="block text-[10px] font-semibold mb-1 tracking-wide"
                     >
                         Full name <span className="text-red-500">*</span>
                     </label>
@@ -84,7 +84,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="email" 
-                        className="block text-xs font-semibold mb-2 tracking-wide"
+                        className="block text-[10px] font-semibold mb-1 tracking-wide"
                     >
                         Email address <span className="text-red-500">*</span>
                     </label>
@@ -114,7 +114,7 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="whatsapp_number" 
-                        className="block text-xs font-semibold mb-2 tracking-wide"
+                        className="block text-[10px] font-semibold mb-1 tracking-wide"
                     >
                         WhatsApp number
                     </label>
@@ -143,15 +143,15 @@ export default function ContactForm() {
                 <div>
                     <label 
                         htmlFor="message" 
-                        className="block text-xs font-semibold mb-2 tracking-wide"
+                        className="block text-[10px] font-semibold mb-1 tracking-wide"
                     >
                         Message
                     </label>
                     <textarea
                         {...register('message')}
                         id="message"
-                        rows={5}
-                        className="visitor-input w-full resize-none"
+                        rows={3}
+                        className="visitor-input w-full resize-none text-xs"
                         placeholder="Tell me about your project or how we can collaborate..."
                     />
                 </div>
@@ -160,22 +160,22 @@ export default function ContactForm() {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="visitor-button w-full flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="visitor-button w-full flex items-center justify-center gap-2 text-xs py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {isSubmitting ? (
                         <>
-                            <Loader2 size={18} className="animate-spin" />
+                            <Loader2 size={14} className="animate-spin" />
                             <span>Sending...</span>
                         </>
                     ) : (
                         <>
-                            <Send size={18} />
+                            <Send size={14} />
                             <span>Send message</span>
                         </>
                     )}
                 </button>
 
-                <p className="text-xs text-center opacity-70">
+                <p className="text-[10px] text-center opacity-70">
                     Fields marked with <span className="text-red-500">*</span> are required
                 </p>
             </form>
