@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS section_theme_settings (
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_by UUID REFERENCES users(id),
+    updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
     UNIQUE(section, theme_mode)
 );
 

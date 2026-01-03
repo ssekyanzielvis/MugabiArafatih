@@ -90,23 +90,33 @@ export async function POST(request: Request) {
             )
         }
 
+        // Check if user exists in users table
+        const { data: userRecord } = await supabase
+            .from('users')
+            .select('id')
+            .eq('id', user.id)
+            .single()
+
         // Upsert the section theme settings (insert or update if exists)
+        const upsertData: any = {
+            section,
+            theme_mode,
+            contrast: contrast ?? 1.0,
+            saturation: saturation ?? 1.0,
+            brightness: brightness ?? 1.0,
+            updated_at: new Date().toISOString(),
+        }
+
+        // Only set updated_by if user exists in users table
+        if (userRecord) {
+            upsertData.updated_by = user.id
+        }
+
         const { data, error } = await supabase
             .from('section_theme_settings')
-            .upsert(
-                {
-                    section,
-                    theme_mode,
-                    contrast: contrast ?? 1.0,
-                    saturation: saturation ?? 1.0,
-                    brightness: brightness ?? 1.0,
-                    updated_by: user.id,
-                    updated_at: new Date().toISOString(),
-                },
-                {
-                    onConflict: 'section,theme_mode',
-                }
-            )
+            .upsert(upsertData, {
+                onConflict: 'section,theme_mode',
+            })
             .select()
 
         if (error) {
