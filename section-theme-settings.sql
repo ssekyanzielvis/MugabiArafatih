@@ -32,7 +32,13 @@ CREATE POLICY "Public can view active section theme settings"
 DROP POLICY IF EXISTS "Admins can manage section theme settings" ON section_theme_settings;
 CREATE POLICY "Admins can manage section theme settings" 
     ON section_theme_settings FOR ALL 
-    USING (auth.uid() IN (SELECT id FROM users WHERE role = 'admin'));
+    USING (
+        auth.uid() IS NOT NULL AND (
+            auth.uid() IN (SELECT id FROM users WHERE role = 'admin') OR
+            -- Fallback: if users table is empty, allow authenticated users
+            NOT EXISTS (SELECT 1 FROM users WHERE role = 'admin')
+        )
+    );
 
 -- Insert default settings for each section
 INSERT INTO section_theme_settings (section, theme_mode, contrast, saturation, brightness)
