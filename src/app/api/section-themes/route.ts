@@ -111,7 +111,18 @@ export async function POST(request: Request) {
 
         if (error) {
             console.error('Error saving section theme:', error)
-            return NextResponse.json({ error: error.message }, { status: 500 })
+            console.error('Error details:', {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            })
+            return NextResponse.json({ 
+                error: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
+            }, { status: 500 })
         }
 
         return NextResponse.json(data)

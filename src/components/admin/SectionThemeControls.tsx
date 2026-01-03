@@ -59,7 +59,11 @@ export default function SectionThemeControls({
                 }),
             })
 
-            if (!response.ok) throw new Error('Failed to save settings')
+            if (!response.ok) {
+                const errorData = await response.json()
+                console.error('Save failed:', errorData)
+                throw new Error(errorData.error || 'Failed to save settings')
+            }
 
             setSaved(true)
             showToast('success', `${sectionLabel} theme saved successfully!`)
@@ -69,7 +73,8 @@ export default function SectionThemeControls({
             setTimeout(() => setSaved(false), 2000)
         } catch (error) {
             console.error('Error saving theme:', error)
-            showToast('error', 'Failed to save theme settings')
+            const errorMessage = error instanceof Error ? error.message : 'Failed to save theme settings'
+            showToast('error', errorMessage)
         } finally {
             setSaving(false)
         }
