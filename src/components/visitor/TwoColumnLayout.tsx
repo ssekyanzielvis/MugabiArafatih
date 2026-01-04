@@ -88,7 +88,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                         src={media.media_url || '/placeholder.jpg'}
                                         alt={media.caption || `${section} image`}
                                         fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                        className="object-contain transition-transform duration-500 group-hover:scale-105"
                                         sizes="(max-width: 768px) 100vw, 50vw"
                                         priority={index === 0}
                                     />
@@ -97,7 +97,7 @@ export default async function TwoColumnLayout({ section }: TwoColumnLayoutProps)
                                 <div className="relative pt-[56.25%]">
                                     <video
                                         src={media.media_url}
-                                        className="absolute top-0 left-0 w-full h-full object-cover"
+                                        className="absolute top-0 left-0 w-full h-full object-contain"
                                         controls
                                         poster="/video-poster.jpg"
                                         aria-label={media.caption || `${section} video`}
