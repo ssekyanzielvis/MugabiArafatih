@@ -23,7 +23,12 @@ const iconMap: Record<string, any> = {
     ),
 }
 
-export default function SocialLinks() {
+interface SocialLinksProps {
+    align?: 'start' | 'center' | 'end'
+    className?: string
+}
+
+export default function SocialLinks({ align = 'start', className = '' }: SocialLinksProps) {
     const [socialLinks, setSocialLinks] = useState<SocialLink[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -58,7 +63,7 @@ export default function SocialLinks() {
 
     return (
         <SectionWrapper section="social_links">
-            <div className="flex flex-wrap justify-start items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm]">
+            <div className={`flex flex-wrap ${align === 'center' ? 'justify-center' : align === 'end' ? 'justify-end' : 'justify-start'} items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm] ${className}`}>
                 {socialLinks.map((link) => {
                     const Icon = iconMap[link.platform] || Mail
                     const isEmail = link.platform === 'email'
