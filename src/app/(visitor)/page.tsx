@@ -2,7 +2,7 @@ import TwoColumnLayout from '@/components/visitor/TwoColumnLayout'
 
 export default function HomePage() {
     return (
-        <div className="py-8 md:py-12">
+        <div className="w-full flex-1 flex flex-col justify-center items-center py-4">
             <TwoColumnLayout section="home" />
         </div>
     )

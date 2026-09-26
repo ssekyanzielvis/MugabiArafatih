@@ -17,7 +17,7 @@ export default function SectionWrapper({ section, children, className = '', styl
 
     return (
         <div
-            className={className}
+            className={`w-full ${className}`}
             style={{
                 ...sectionStyle,
                 ...style,

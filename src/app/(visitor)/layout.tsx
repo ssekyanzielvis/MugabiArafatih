@@ -14,16 +14,21 @@ export default function VisitorLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="visitor-theme min-h-screen antialiased">
+        <div className="visitor-theme min-h-screen flex flex-col antialiased w-full">
             <AnalyticsTracker />
             <Header />
-            <main style={{ 
-                marginLeft: '2cm', 
-                marginRight: '2cm',
-                paddingTop: '1rem',
-                paddingBottom: '3rem'
-            }}>
-                {children}
+            <main 
+                className="flex-1 w-full flex flex-col justify-center items-center" 
+                style={{ 
+                    paddingLeft: '2cm', 
+                    paddingRight: '2cm',
+                    paddingTop: '1rem',
+                    paddingBottom: '2rem'
+                }}
+            >
+                <div className="w-full max-w-7xl mx-auto flex-1 flex flex-col justify-center items-center">
+                    {children}
+                </div>
             </main>
         </div>
     )
