@@ -129,8 +129,27 @@ export default function SocialLinksManager() {
             fetchLinks()
         } catch (error: unknown) {
             console.error('Error saving social link:', error)
-            const errorMsg = error instanceof Error ? error.message : 'Unknown error'
-            showToast('error', `Failed to save: ${errorMsg}`)
+            let errorMsg = 'Unknown error'
+            if (typeof error === 'object' && error !== null) {
+                const err = error as Record<string, unknown>
+                if (typeof err.message === 'string') {
+                    errorMsg = err.message
+                    if (typeof err.details === 'string' && err.details) {
+                        errorMsg += `: ${err.details}`
+                    }
+                    if (typeof err.hint === 'string' && err.hint) {
+                        errorMsg += ` (${err.hint})`
+                    }
+                }
+            } else if (error instanceof Error) {
+                errorMsg = error.message
+            }
+
+            if (errorMsg.toLowerCase().includes('constraint') || errorMsg.toLowerCase().includes('platform')) {
+                showToast('error', `Database constraint error: Please run add-instagram-support.sql in Supabase SQL Editor. (${errorMsg})`)
+            } else {
+                showToast('error', `Failed to save: ${errorMsg}`)
+            }
         }
     }
 
@@ -148,7 +167,15 @@ export default function SocialLinksManager() {
             fetchLinks()
         } catch (error: unknown) {
             console.error('Error deleting social link:', error)
-            const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+            let errorMsg = 'Unknown error'
+            if (typeof error === 'object' && error !== null) {
+                const err = error as Record<string, unknown>
+                if (typeof err.message === 'string') {
+                    errorMsg = err.message
+                }
+            } else if (error instanceof Error) {
+                errorMsg = error.message
+            }
             showToast('error', `Failed to delete: ${errorMsg}`)
         }
     }
