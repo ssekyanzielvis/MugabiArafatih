@@ -105,14 +105,13 @@ CREATE TABLE IF NOT EXISTS public.collaborate_media (
 -- ============================================
 CREATE TABLE IF NOT EXISTS public.social_links (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    platform TEXT NOT NULL CHECK (platform IN ('email', 'facebook', 'tiktok', 'youtube', 'twitter')),
+    platform TEXT NOT NULL,
     url TEXT NOT NULL,
     position INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL,
-    UNIQUE(platform)
+    created_by UUID REFERENCES public.users(id) ON DELETE SET NULL
 );
 
 -- Contact submissions table

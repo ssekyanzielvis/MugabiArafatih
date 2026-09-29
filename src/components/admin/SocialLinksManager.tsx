@@ -1,25 +1,18 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Save, Trash2, Plus, X } from 'lucide-react'
+import { Save, Trash2, Plus, X, ExternalLink, Globe } from 'lucide-react'
 import { showToast } from '@/components/ui/toaster'
+import { KNOWN_PLATFORMS, renderSocialIcon, formatSocialHref, getPlatformDisplayLabel } from '@/lib/socialPlatforms'
 
 type SocialLink = {
     id: string
-    platform: 'email' | 'facebook' | 'tiktok' | 'youtube' | 'twitter'
+    platform: string
     url: string
     position: number
     is_active: boolean
 }
-
-const PLATFORMS = [
-    { value: 'email', label: 'Email', placeholder: 'your@email.com' },
-    { value: 'facebook', label: 'Facebook', placeholder: 'https://facebook.com/yourprofile' },
-    { value: 'tiktok', label: 'TikTok', placeholder: 'https://tiktok.com/@yourprofile' },
-    { value: 'youtube', label: 'YouTube', placeholder: 'https://youtube.com/yourchannel' },
-    { value: 'twitter', label: 'Twitter/X', placeholder: 'https://twitter.com/yourprofile' },
-] as const
 
 export default function SocialLinksManager() {
     const [links, setLinks] = useState<SocialLink[]>([])
@@ -28,18 +21,15 @@ export default function SocialLinksManager() {
     const [isAdding, setIsAdding] = useState(false)
     
     // Form state
-    const [platform, setPlatform] = useState<string>('email')
+    const [selectedPreset, setSelectedPreset] = useState<string>('instagram')
+    const [customPlatformName, setCustomPlatformName] = useState('')
     const [url, setUrl] = useState('')
     const [position, setPosition] = useState(0)
     const [isActive, setIsActive] = useState(true)
 
     const supabase = createClient()
 
-    useEffect(() => {
-        fetchLinks()
-    }, [])
-
-    async function fetchLinks() {
+    const fetchLinks = useCallback(async () => {
         setLoading(true)
         const { data, error } = await supabase
             .from('social_links')
@@ -47,33 +37,50 @@ export default function SocialLinksManager() {
             .order('position', { ascending: true })
 
         if (error) {
-            console.error('Error fetching social links:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            })
+            console.error('Error fetching social links:', error)
             showToast('error', `Failed to load social links: ${error.message}`)
         } else {
             setLinks(data || [])
         }
         setLoading(false)
-    }
+    }, [supabase])
+
+    useEffect(() => {
+        fetchLinks()
+    }, [fetchLinks])
 
     function resetForm() {
-        setPlatform('email')
+        setSelectedPreset('instagram')
+        setCustomPlatformName('')
         setUrl('')
-        setPosition(0)
+        setPosition(links.length > 0 ? Math.max(...links.map(l => l.position || 0)) + 1 : 0)
         setIsActive(true)
         setEditingId(null)
         setIsAdding(false)
     }
 
+    function handleStartAdd() {
+        setSelectedPreset('instagram')
+        setCustomPlatformName('')
+        setUrl('')
+        setPosition(links.length > 0 ? Math.max(...links.map(l => l.position || 0)) + 1 : 0)
+        setIsActive(true)
+        setEditingId(null)
+        setIsAdding(true)
+    }
+
     function handleEdit(link: SocialLink) {
         setEditingId(link.id)
-        setPlatform(link.platform)
+        const matchedPreset = KNOWN_PLATFORMS.find(p => p.value === link.platform.toLowerCase())
+        if (matchedPreset && matchedPreset.value !== 'custom') {
+            setSelectedPreset(matchedPreset.value)
+            setCustomPlatformName('')
+        } else {
+            setSelectedPreset('custom')
+            setCustomPlatformName(link.platform)
+        }
         setUrl(link.url)
-        setPosition(link.position)
+        setPosition(link.position || 0)
         setIsActive(link.is_active)
         setIsAdding(true)
     }
@@ -81,11 +88,20 @@ export default function SocialLinksManager() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
 
+        const finalPlatform = selectedPreset === 'custom' 
+            ? (customPlatformName.trim().toLowerCase() || 'custom') 
+            : selectedPreset
+
+        if (!finalPlatform) {
+            showToast('error', 'Please select or enter a platform name')
+            return
+        }
+
         try {
             const linkData = {
-                platform,
-                url,
-                position,
+                platform: finalPlatform,
+                url: url.trim(),
+                position: Number(position) || 0,
                 is_active: isActive,
                 updated_at: new Date().toISOString()
             }
@@ -111,14 +127,9 @@ export default function SocialLinksManager() {
 
             resetForm()
             fetchLinks()
-        } catch (error: any) {
-            console.error('Error saving social link:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            })
-            const errorMsg = error.message || error.hint || error.details || 'Unknown error'
+        } catch (error: unknown) {
+            console.error('Error saving social link:', error)
+            const errorMsg = error instanceof Error ? error.message : 'Unknown error'
             showToast('error', `Failed to save: ${errorMsg}`)
         }
     }
@@ -135,33 +146,31 @@ export default function SocialLinksManager() {
             if (error) throw error
             showToast('success', 'Social link deleted successfully!')
             fetchLinks()
-        } catch (error: any) {
-            console.error('Error deleting social link:', {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code
-            })
-            showToast('error', `Failed to delete: ${error.message || 'Unknown error'}`)
+        } catch (error: unknown) {
+            console.error('Error deleting social link:', error)
+            const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+            showToast('error', `Failed to delete: ${errorMsg}`)
         }
     }
+
+    const currentPreset = KNOWN_PLATFORMS.find(p => p.value === selectedPreset)
+    const effectivePlatformForIcon = selectedPreset === 'custom' ? (customPlatformName || 'globe') : selectedPreset
 
     if (loading) {
         return <div className="text-center py-8 opacity-60 italic uppercase tracking-widest font-bold">Loading Social Links...</div>
     }
 
-    const usedPlatforms = links.map(link => link.platform)
-    const availablePlatforms = PLATFORMS.filter(p => !usedPlatforms.includes(p.value as any) || editingId)
-
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold uppercase tracking-widest">Social Links</h2>
+                <div>
+                    <h2 className="text-2xl font-bold uppercase tracking-widest">Social Links</h2>
+                    <p className="text-xs opacity-60 mt-1">Add as many social media profiles, channels, or custom links as needed.</p>
+                </div>
                 {!isAdding && (
                     <button
-                        onClick={() => setIsAdding(true)}
+                        onClick={handleStartAdd}
                         className="admin-button flex items-center space-x-2 px-6 py-3"
-                        disabled={availablePlatforms.length === 0}
                     >
                         <Plus size={20} />
                         <span>Add Social Link</span>
@@ -177,51 +186,69 @@ export default function SocialLinksManager() {
                         {editingId ? 'Edit Social Link' : 'Add Social Link'}
                     </h3>
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-bold mb-2 uppercase opacity-70">Platform</label>
-                            <select
-                                value={platform}
-                                onChange={(e) => setPlatform(e.target.value)}
-                                className="admin-input w-full px-4 py-3 bg-inherit"
-                                required
-                                disabled={!!editingId}
-                            >
-                                {editingId ? (
-                                    <option value={platform}>
-                                        {PLATFORMS.find(p => p.value === platform)?.label}
-                                    </option>
-                                ) : (
-                                    availablePlatforms.map(p => (
-                                        <option key={p.value} value={p.value}>{p.label}</option>
-                                    ))
-                                )}
-                            </select>
-                            {editingId && (
-                                <p className="text-xs opacity-50 mt-1">Platform cannot be changed when editing</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label className="block text-sm font-bold mb-2 uppercase opacity-70">Platform</label>
+                                <div className="flex items-center space-x-3">
+                                    <div className="p-3 border border-inherit flex items-center justify-center shrink-0">
+                                        {renderSocialIcon(effectivePlatformForIcon, 'w-6 h-6')}
+                                    </div>
+                                    <select
+                                        value={selectedPreset}
+                                        onChange={(e) => setSelectedPreset(e.target.value)}
+                                        className="admin-input w-full px-4 py-3 bg-inherit"
+                                        required
+                                    >
+                                        {KNOWN_PLATFORMS.map(p => (
+                                            <option key={p.value} value={p.value}>{p.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+
+                            {selectedPreset === 'custom' && (
+                                <div>
+                                    <label className="block text-sm font-bold mb-2 uppercase opacity-70">Custom Platform Name</label>
+                                    <input
+                                        type="text"
+                                        value={customPlatformName}
+                                        onChange={(e) => setCustomPlatformName(e.target.value)}
+                                        className="admin-input w-full px-4 py-3"
+                                        placeholder="e.g. Substack, Medium, Behance..."
+                                        required
+                                    />
+                                </div>
                             )}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold mb-2 uppercase opacity-70">URL / Value</label>
+                            <label className="block text-sm font-bold mb-2 uppercase opacity-70">URL / Handle / Link</label>
                             <input
                                 type="text"
                                 value={url}
                                 onChange={(e) => setUrl(e.target.value)}
                                 className="admin-input w-full px-4 py-3"
-                                placeholder={PLATFORMS.find(p => p.value === platform)?.placeholder}
+                                placeholder={currentPreset?.placeholder || 'https://...'}
                                 required
                             />
+                            <p className="text-xs opacity-50 mt-1">
+                                {selectedPreset === 'email' 
+                                    ? 'Enter email address (e.g. hello@example.com)' 
+                                    : selectedPreset === 'whatsapp' 
+                                    ? 'Enter phone with country code or full https://wa.me/ link' 
+                                    : 'Enter full URL (e.g. https://instagram.com/yourprofile)'}
+                            </p>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-xs font-bold mb-2 uppercase opacity-60 tracking-widest">
-                                    Display Order
+                                    Display Order (Position)
                                 </label>
                                 <input
                                     type="number"
                                     value={position}
-                                    onChange={(e) => setPosition(parseInt(e.target.value))}
+                                    onChange={(e) => setPosition(parseInt(e.target.value) || 0)}
                                     className="admin-input w-full px-4 py-3"
                                     min="0"
                                 />
@@ -236,7 +263,7 @@ export default function SocialLinksManager() {
                                         className="w-5 h-5 border-2 border-inherit bg-inherit checked:bg-inherit checked:invert appearance-none transition-all cursor-pointer"
                                     />
                                     <span className="text-xs font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
-                                        Active/Published
+                                        Active / Visible to Visitors
                                     </span>
                                 </label>
                             </div>
@@ -268,47 +295,71 @@ export default function SocialLinksManager() {
             {!isAdding && (
                 <div className="grid grid-cols-1 gap-4">
                     {links.length === 0 ? (
-                        <div className="admin-card p-8 text-center opacity-60">
-                            <p className="text-sm uppercase tracking-wider">No social links added yet</p>
+                        <div className="admin-card p-8 text-center opacity-60 border-2 border-dashed">
+                            <Globe className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm uppercase tracking-wider font-bold">No social links added yet</p>
+                            <p className="text-xs opacity-60 mt-1">Click &quot;Add Social Link&quot; above to add Instagram, Facebook, YouTube, etc.</p>
                         </div>
                     ) : (
-                        links.map((link) => (
-                            <div
-                                key={link.id}
-                                className="admin-card p-6 flex items-center justify-between border-l-8 border-l-inherit"
-                            >
-                                <div className="flex-1">
-                                    <div className="flex items-center space-x-4 mb-2">
-                                        <span className="px-3 py-1 border border-inherit text-[10px] font-bold uppercase tracking-widest">
-                                            {PLATFORMS.find(p => p.value === link.platform)?.label}
-                                        </span>
-                                        <span className="text-xs opacity-40 font-mono">Position: {link.position}</span>
-                                        {!link.is_active && (
-                                            <span className="px-3 py-1 bg-inherit invert text-[10px] font-bold uppercase tracking-widest">
-                                                Inactive
-                                            </span>
-                                        )}
+                        links.map((link) => {
+                            const formattedHref = formatSocialHref(link.platform, link.url)
+                            const displayLabel = getPlatformDisplayLabel(link.platform)
+
+                            return (
+                                <div
+                                    key={link.id}
+                                    className={`admin-card p-5 flex items-center justify-between border-l-8 ${link.is_active ? 'border-l-green-500' : 'border-l-gray-400 opacity-60'}`}
+                                >
+                                    <div className="flex items-center space-x-4 flex-1 min-w-0">
+                                        <div className="p-3 border border-inherit flex items-center justify-center shrink-0">
+                                            {renderSocialIcon(link.platform, 'w-6 h-6')}
+                                        </div>
+
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center space-x-3 mb-1">
+                                                <span className="text-sm font-bold uppercase tracking-wider">
+                                                    {displayLabel}
+                                                </span>
+                                                <span className="text-[10px] px-2 py-0.5 border border-inherit font-mono opacity-60">
+                                                    Order: {link.position}
+                                                </span>
+                                                {!link.is_active && (
+                                                    <span className="px-2 py-0.5 bg-inherit invert text-[10px] font-bold uppercase tracking-widest">
+                                                        Hidden
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <a 
+                                                href={formattedHref} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="opacity-70 text-xs font-mono truncate flex items-center space-x-1 hover:underline hover:opacity-100"
+                                            >
+                                                <span>{link.url}</span>
+                                                <ExternalLink size={12} className="inline ml-1 shrink-0 opacity-50" />
+                                            </a>
+                                        </div>
                                     </div>
-                                    <p className="opacity-70 text-sm font-mono break-all">{link.url}</p>
+
+                                    <div className="flex space-x-2 ml-4 shrink-0">
+                                        <button
+                                            onClick={() => handleEdit(link)}
+                                            className="p-3 border border-inherit hover:invert transition-all"
+                                            title="Edit"
+                                        >
+                                            <Save size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(link.id)}
+                                            className="p-3 border border-inherit hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+                                            title="Delete"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex space-x-2 ml-6">
-                                    <button
-                                        onClick={() => handleEdit(link)}
-                                        className="p-3 border border-inherit hover:invert transition-all"
-                                        title="Edit"
-                                    >
-                                        <Save size={18} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(link.id)}
-                                        className="p-3 border border-inherit hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
-                                        title="Delete"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        ))
+                            )
+                        })
                     )}
                 </div>
             )}

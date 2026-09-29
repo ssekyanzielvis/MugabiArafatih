@@ -95,14 +95,13 @@ CREATE TABLE collaborate_media (
 -- SOCIAL MEDIA LINKS TABLE
 CREATE TABLE social_links (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-    platform TEXT NOT NULL CHECK (platform IN ('email', 'facebook', 'tiktok', 'youtube', 'twitter')),
+    platform TEXT NOT NULL,
     url TEXT NOT NULL,
     position INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_by UUID REFERENCES users(id),
-    UNIQUE(platform)
+    created_by UUID REFERENCES users(id)
 );
 
 -- Contact form submissions

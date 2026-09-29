@@ -1,26 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Mail, Facebook, Twitter, Youtube } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
 import SectionWrapper from '@/components/visitor/SectionWrapper'
+import { renderSocialIcon, formatSocialHref, getPlatformDisplayLabel } from '@/lib/socialPlatforms'
 
 interface SocialLink {
     id: string
     platform: string
     url: string
     position: number
-}
-
-const iconMap: Record<string, any> = {
-    email: Mail,
-    facebook: Facebook,
-    twitter: Twitter,
-    youtube: Youtube,
-    tiktok: () => (
-        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
-        </svg>
-    ),
 }
 
 interface SocialLinksProps {
@@ -63,12 +51,11 @@ export default function SocialLinks({ align = 'start', className = '' }: SocialL
 
     return (
         <SectionWrapper section="social_links">
-            <div className={`flex flex-wrap ${align === 'center' ? 'justify-center' : align === 'end' ? 'justify-end' : 'justify-start'} items-center gap-4 md:gap-8 lg:gap-[1.5cm] my-8 md:my-12 lg:my-[1.5cm] ${className}`}>
+            <div className={`flex flex-wrap ${align === 'center' ? 'justify-center' : align === 'end' ? 'justify-end' : 'justify-start'} items-center gap-4 md:gap-6 lg:gap-8 my-8 md:my-12 lg:my-[1.5cm] ${className}`}>
                 {socialLinks.map((link) => {
-                    const Icon = iconMap[link.platform] || Mail
-                    const isEmail = link.platform === 'email'
-                    const href = isEmail ? `mailto:${link.url}` : link.url || '#'
-                    const label = link.platform.charAt(0).toUpperCase() + link.platform.slice(1)
+                    const isEmail = link.platform?.toLowerCase() === 'email' || link.platform?.toLowerCase() === 'mail'
+                    const href = formatSocialHref(link.platform, link.url)
+                    const label = getPlatformDisplayLabel(link.platform)
 
                     return (
                         <a
@@ -76,14 +63,15 @@ export default function SocialLinks({ align = 'start', className = '' }: SocialL
                             href={href}
                             target={isEmail ? undefined : '_blank'}
                             rel={isEmail ? undefined : 'noopener noreferrer'}
-                            className="p-2 md:p-4 lg:p-6 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
+                            className="p-3 md:p-4 lg:p-5 border-2 transition-all duration-200 hover:shadow-[4px_4px_0_var(--theme-fg)] hover:translate-x-[-2px] hover:translate-y-[-2px] group focus:outline-none focus-visible:ring-2"
                             style={{ borderColor: 'var(--theme-fg)' }}
                             aria-label={`${label}: ${link.url}`}
+                            title={label}
                         >
                             <div 
-                                className="w-8 h-8 md:w-12 md:h-12 lg:w-16 lg:h-16 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
+                                className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 flex items-center justify-center group-hover:scale-110 transition-transform duration-200"
                             >
-                                {typeof Icon === 'function' ? <Icon /> : <Icon size={24} className="md:w-9 md:h-9 lg:w-12 lg:h-12" aria-hidden="true" />}
+                                {renderSocialIcon(link.platform, 'w-full h-full')}
                             </div>
                         </a>
                     )

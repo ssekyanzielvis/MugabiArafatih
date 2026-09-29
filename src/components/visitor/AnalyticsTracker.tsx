@@ -3,6 +3,29 @@
 import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
+interface AnalyticsPayload {
+    visitorId: string
+    pagePath: string
+    referrer: string
+    userAgent: string
+    deviceType: 'Desktop' | 'Mobile' | 'Tablet'
+    country: string | null
+    city: string | null
+    ipAddress: string | null
+    sessionDuration: number
+}
+
+// Detect device type with enhanced accuracy
+function getDeviceType(ua: string): 'Desktop' | 'Mobile' | 'Tablet' {
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return 'Tablet'
+    }
+    if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        return 'Mobile'
+    }
+    return 'Desktop'
+}
+
 /**
  * Advanced Visitor Analytics Tracker
  * Captures: device type, location (IP geolocation), session duration, page views, referrer
@@ -10,7 +33,7 @@ import { usePathname } from 'next/navigation'
  */
 export default function AnalyticsTracker() {
     const pathname = usePathname()
-    const sessionStartTime = useRef<number>(Date.now())
+    const sessionStartTime = useRef<number | null>(null)
     const visitorId = useRef<string>('')
     const lastPagePath = useRef<string>('')
     const hasTrackedInitial = useRef<boolean>(false)
@@ -18,6 +41,10 @@ export default function AnalyticsTracker() {
     const [showError, setShowError] = useState<boolean>(false)
 
     useEffect(() => {
+        if (!sessionStartTime.current) {
+            sessionStartTime.current = Date.now()
+        }
+
         // Generate or retrieve visitor ID on mount
         const getVisitorId = () => {
             let id = localStorage.getItem('visitor_id')
@@ -41,29 +68,46 @@ export default function AnalyticsTracker() {
         hasTrackedInitial.current = true
 
         const trackPageView = async () => {
-            // Declare analyticsData so it's accessible in both try and catch blocks
-            let analyticsData: any = undefined;
+            let analyticsData: AnalyticsPayload | undefined = undefined
             try {
                 // Get device information
                 const userAgent = navigator.userAgent
                 const deviceType = getDeviceType(userAgent)
                 const referrer = document.referrer || 'direct'
                 
-                // Get approximate location using IP geolocation API
-                let locationData: any = null
+                // Get approximate location using IP geolocation API with fallback
+                let locationData: { country_name?: string; city?: string; ip?: string } | null = null
                 try {
                     const geoResponse = await fetch('https://ipapi.co/json/', {
-                        signal: AbortSignal.timeout(3000) // 3 second timeout
+                        signal: AbortSignal.timeout(2500)
                     })
                     if (geoResponse.ok) {
                         locationData = await geoResponse.json()
                     }
-                } catch (geoError) {
-                    console.warn('Geolocation fetch failed (non-critical):', geoError)
+                } catch {
+                    // Fallback to ipwho.is if ipapi is blocked by ad-blocker / rate-limited
+                    try {
+                        const fallbackResponse = await fetch('https://ipwho.is/', {
+                            signal: AbortSignal.timeout(2500)
+                        })
+                        if (fallbackResponse.ok) {
+                            const data = await fallbackResponse.json()
+                            if (data.success !== false) {
+                                locationData = {
+                                    country_name: data.country,
+                                    city: data.city,
+                                    ip: data.ip
+                                }
+                            }
+                        }
+                    } catch {
+                        // Non-critical: location data optional
+                    }
                 }
 
                 // Calculate session duration
-                const sessionDuration = Math.floor((Date.now() - sessionStartTime.current) / 1000)
+                const start = sessionStartTime.current || Date.now()
+                const sessionDuration = Math.floor((Date.now() - start) / 1000)
 
                 // Prepare analytics data
                 analyticsData = {
@@ -94,64 +138,33 @@ export default function AnalyticsTracker() {
                 })
 
                 if (!response.ok) {
-                    let errorDetails: any = {
-                        status: response.status,
-                        statusText: response.statusText,
-                        url: response.url,
-                        headers: {
-                            contentType: response.headers.get('content-type')
-                        }
-                    }
-                    
-                    // Try to parse error response
                     const contentType = response.headers.get('content-type')
+                    let responseMsg = `HTTP ${response.status}: ${response.statusText}`
                     try {
                         if (contentType?.includes('application/json')) {
                             const errorJson = await response.json()
-                            errorDetails = { ...errorDetails, ...errorJson }
+                            responseMsg = errorJson.message || errorJson.error || responseMsg
                         } else {
                             const errorText = await response.text()
-                            errorDetails.responseText = errorText
+                            if (errorText) responseMsg = errorText
                         }
-                    } catch (parseError: any) {
-                        errorDetails.parseError = parseError?.message || 'Could not read response'
+                    } catch {
+                        // Ignore parse error
                     }
                     
-                    console.error('❌ Analytics tracking failed:', errorDetails)
-                    console.error('📍 Failed tracking data:', analyticsData)
-                    
-                    // Show visible error message
-                    const errorMsg = errorDetails.message 
-                        || errorDetails.error 
-                        || errorDetails.responseText 
-                        || `HTTP ${response.status}: ${response.statusText}`
-                    
-                    setErrorMessage(`Analytics Error: ${errorMsg}`)
+                    console.error('❌ Analytics tracking failed:', responseMsg)
+                    setErrorMessage(`Analytics Error: ${responseMsg}`)
                     setShowError(true)
-                    setTimeout(() => setShowError(false), 10000) // Hide after 10 seconds
+                    setTimeout(() => setShowError(false), 10000)
                 } else {
-                    console.log('✅ Page view tracked successfully')
                     setShowError(false)
                 }
-            } catch (error: any) {
-                // Capture detailed error information
-                const errorInfo = {
-                    message: error?.message || 'Unknown error',
-                    name: error?.name || 'Error',
-                    stack: error?.stack,
-                    cause: error?.cause,
-                    type: typeof error,
-                    error: error
-                }
-                
-                console.error('❌ Analytics tracking error:', errorInfo)
-                console.error('📍 Failed tracking data:', analyticsData)
-                
-                // Show visible error message
-                const errorMsg = error?.message || 'Network or system error'
+            } catch (error: unknown) {
+                const errorMsg = error instanceof Error ? error.message : 'Network or system error'
+                console.error('❌ Analytics tracking error:', errorMsg)
                 setErrorMessage(`Analytics Error: ${errorMsg}`)
                 setShowError(true)
-                setTimeout(() => setShowError(false), 10000) // Hide after 10 seconds
+                setTimeout(() => setShowError(false), 10000)
             }
         }
 
@@ -160,7 +173,8 @@ export default function AnalyticsTracker() {
 
         // Track when user leaves the page (session duration update)
         const handleBeforeUnload = () => {
-            const sessionDuration = Math.floor((Date.now() - sessionStartTime.current) / 1000)
+            const start = sessionStartTime.current || Date.now()
+            const sessionDuration = Math.floor((Date.now() - start) / 1000)
             
             // Use sendBeacon for reliable tracking on page unload
             const data = JSON.stringify({
@@ -184,17 +198,6 @@ export default function AnalyticsTracker() {
         }
     }, [pathname])
 
-    // Detect device type with enhanced accuracy
-    const getDeviceType = (ua: string): 'Desktop' | 'Mobile' | 'Tablet' => {
-        if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-            return 'Tablet'
-        }
-        if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-            return 'Mobile'
-        }
-        return 'Desktop'
-    }
-
     // Render error notification if tracking fails
     if (showError && errorMessage) {
         return (
@@ -211,49 +214,40 @@ export default function AnalyticsTracker() {
                     boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
                     zIndex: 9999,
                     fontSize: '14px',
-                    fontFamily: 'system-ui, -apple-system, sans-serif',
-                    border: '2px solid #dc2626',
+                    border: '2px solid #ef4444',
                     animation: 'slideIn 0.3s ease-out'
                 }}
             >
-                <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '16px' }}>
-                    ⚠️ Analytics Tracking Error
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span>⚠️</span>
+                        <span>Analytics Tracking Error</span>
+                    </div>
+                    <button 
+                        onClick={() => setShowError(false)}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: 'white',
+                            cursor: 'pointer',
+                            fontSize: '18px',
+                            lineHeight: 1,
+                            padding: '0 4px'
+                        }}
+                    >
+                        ✕
+                    </button>
                 </div>
-                <div style={{ marginBottom: '12px', lineHeight: '1.5' }}>
+                <div style={{ fontSize: '13px', opacity: 0.95, lineHeight: 1.4 }}>
                     {errorMessage}
                 </div>
-                <div style={{ 
-                    fontSize: '12px', 
-                    opacity: 0.9,
-                    borderTop: '1px solid rgba(255,255,255,0.3)',
-                    paddingTop: '8px',
-                    marginTop: '8px'
-                }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Troubleshooting:</div>
-                    <div>1. Check browser console (F12) for details</div>
-                    <div>2. Verify database setup in Supabase</div>
-                    <div>3. Run supabase-setup.sql script</div>
+                <div style={{ fontSize: '11px', opacity: 0.8, marginTop: '8px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '6px' }}>
+                    Check browser console for details. This does not affect site functionality.
                 </div>
-                <button
-                    onClick={() => setShowError(false)}
-                    style={{
-                        position: 'absolute',
-                        top: '8px',
-                        right: '8px',
-                        background: 'transparent',
-                        border: 'none',
-                        color: 'white',
-                        fontSize: '20px',
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        lineHeight: '1'
-                    }}
-                >
-                    ×
-                </button>
             </div>
         )
     }
 
+    // Component doesn't render anything when working normally
     return null
 }
